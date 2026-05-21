@@ -4,7 +4,7 @@
 const BIO = {
   name: "FEDERICA GIGLIO",
   short: "Federica Giglio (b. Milano, IT)",
-  long: "Italian photographer, born in Milano and based in Los Angeles. Her practice centers on the human form — quiet, in-between moments rendered mostly in black & white. The work moves between commissioned fashion editorial, portraiture and the street.",
+  long: "Italian photographer, born in Milano and based in Los Angeles. My practice centers on the human form — quiet, in-between moments rendered mostly in black & white. The work moves between commissioned fashion editorial, portraiture and the street.",
   location: "LOS ANGELES, CA",
   origin: "MILANO, IT",
   email: "fedegiglio01@gmail.com",
