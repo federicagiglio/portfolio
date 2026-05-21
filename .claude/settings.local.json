@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Rename-Item \"c:\\\\Users\\\\matti\\\\Desktop\\\\Fe_website\\\\index \\(29\\).html\" \"index.html\")",
+      "PowerShell(Rename-Item \"c:\\\\Users\\\\matti\\\\Desktop\\\\Fe_website\\\\index \\(29\\).html\" \"index.html\")"
+    ]
+  }
+}
