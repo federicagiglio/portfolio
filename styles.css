@@ -229,9 +229,9 @@
   grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
   gap:4px;padding:0 6px;align-content:start}
 
-.csheet-fig{position:relative;aspect-ratio:2/3;overflow:hidden;
-  cursor:pointer;margin:0;background:#e8e8e8}
-.csheet-fig img{width:100%;height:100%;object-fit:cover;display:block;
+.csheet-fig{position:relative;aspect-ratio:1;overflow:hidden;
+  cursor:pointer;margin:0;background:var(--paper)}
+.csheet-fig img{width:100%;height:100%;object-fit:contain;display:block;
   transition:filter .25s ease-out}
 .csheet-fig:hover img{filter:blur(10px)}
 .csheet-num{position:absolute;bottom:6px;left:8px;font-size:10px;
