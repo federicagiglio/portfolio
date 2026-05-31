@@ -48,14 +48,14 @@ function PIntro({ p, onToggleCS, contactSheet }) {
   return (
     <div className="pcard">
       <h1 className="pcard-title">{p.title}</h1>
-      <p className="pcard-body">{p.long}</p>
+      <p className="pcard-body" style={{whiteSpace:'pre-line'}}>{p.long}</p>
       <div className="pcard-foot">
         <CSToggle on={contactSheet} onToggle={onToggleCS} />
         <dl className="pcard-spec mono upper">
           <div><dt>Year</dt><dd>{p.year}</dd></div>
           <div><dt>Place</dt><dd>{p.place}</dd></div>
           <div><dt>Frames</dt><dd>{p.count}</dd></div>
-          <div><dt>Format</dt><dd>35mm + 645</dd></div>
+          {(p.format) && <div><dt>Format</dt><dd>{p.format}</dd></div>}
         </dl>
         {!contactSheet && (
           <div className="pcard-scroll mono upper">
