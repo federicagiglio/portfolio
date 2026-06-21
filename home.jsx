@@ -24,7 +24,6 @@ function TopBar() {
           <div className="top-block-foot mono upper">
             <span>Born</span><b>{BIO.origin}</b>
             <span>Based</span><b>{BIO.location}</b>
-            <span>Since</span><b>2019</b>
           </div>
         </section>
 
@@ -41,10 +40,11 @@ function TopBar() {
               <span className="top-clist-l">IG·</span>
               <a className="top-clist-v" href="https://instagram.com/fede.giglio" target="_blank" rel="noopener">{BIO.instagram}</a>
             </li>
+            <li>
+              <span className="top-clist-l">MEDIA</span>
+              <span className="top-clist-v">Still + Motion</span>
+            </li>
           </ul>
-          <div className="top-block-foot mono upper">
-            <span>Repr.</span><b>Open for test shot<br/>and TFP project</b>
-          </div>
         </section>
       </div>
     </header>
@@ -72,7 +72,10 @@ function GridTile({ p, goTo }) {
         )}
       </div>
       <div className="tile-meta">
-        <span className="tile-title">{p.title}</span>
+        <div className="tile-title-wrap">
+          <span className="tile-title">{p.title}</span>
+          {p.subtitle && <span className="tile-subtitle mono upper">{p.subtitle}</span>}
+        </div>
         <span className="tile-arrow">→</span>
       </div>
     </a>
@@ -90,6 +93,7 @@ function CTile({ p, goTo }) {
       </div>
       <div className="ctile-info">
         <span className="ctile-name">{p.title}</span>
+        {p.subtitle && <span className="ctile-subtitle mono upper">{p.subtitle}</span>}
         <span className="ctile-sub">{p.cat} · {p.year}</span>
       </div>
     </a>
@@ -138,7 +142,7 @@ function BottomBar() {
     <footer className="bot mono upper">
       <div className="bot-l">
         <span className="bot-dot">●</span>
-        <span>Index · 07 projects · 2021—2026</span>
+        <span>Index · 05 projects · 2019—2026</span>
       </div>
       <div className="bot-c">
         <span>Hover to blur · Click to open</span>

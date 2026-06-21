@@ -48,6 +48,7 @@ function PIntro({ p, onToggleCS, contactSheet }) {
   return (
     <div className="pcard">
       <h1 className="pcard-title">{p.title}</h1>
+      {p.subtitle && <p className="pcard-subtitle mono upper">{p.subtitle}</p>}
       <p className="pcard-body" style={{whiteSpace:'pre-line'}}>{p.long}</p>
       <div className="pcard-foot">
         <CSToggle on={contactSheet} onToggle={onToggleCS} />
