@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Federica Giglio / portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --accent:#E62317;
+    --ink:#0a0a0a;
+    --paper:#fafafa;
+    --paper-2:#f0efed;
+    --rule:rgba(10,10,10,.12);
+    --rule-soft:rgba(10,10,10,.06);
+    --grotesk:'Geist','Neue Haas Grotesk','Helvetica Neue',sans-serif;
+    --mono:var(--grotesk);
+    --serif:var(--grotesk);
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);
+    font-family:var(--grotesk);font-weight:400;-webkit-font-smoothing:antialiased;
+    text-rendering:geometricPrecision;cursor:none}
+  body{min-height:100vh;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit}
+
+  /* Hide cursor everywhere — replaced by halo */
+  *{cursor:none !important}
+
+  /* Page transition wrapper */
+  .stage{transition:filter 380ms cubic-bezier(.4,0,.2,1),opacity 380ms cubic-bezier(.4,0,.2,1);
+    will-change:filter,opacity}
+  .stage.leaving{filter:blur(28px);opacity:0;transform:scale(1.01)}
+  .stage.entering{filter:blur(28px);opacity:0}
+
+  /* Cursor: solid red dot, no halo. Uses mix-blend-mode: difference so it
+     reads on dark imagery and light paper alike without a stroke. */
+  .cursor-dot{position:fixed;left:0;top:0;border-radius:50%;
+    pointer-events:none;z-index:9999;will-change:transform,width,height;
+    mix-blend-mode:multiply}
+
+  /* Reusable utility */
+  .mono{font-family:var(--mono);font-weight:400;letter-spacing:.01em}
+  .upper{text-transform:uppercase}
+
+  /* Placeholder image — softly grained grey rectangle. Default is a neutral
+     B&W chip; the per-project variants (.ph[data-kind]) reshape the gradient
+     to hint at the subject so the home grid doesn't read as one tile six times. */
+  .ph{position:relative;width:100%;height:100%;overflow:hidden;
+    background:#cccccc;isolation:isolate}
+  .ph::before{content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(60% 45% at 50% 30%, rgba(255,255,255,.55), transparent 70%),
+      radial-gradient(120% 80% at 50% 100%, rgba(0,0,0,.35), transparent 60%);
+    mix-blend-mode:multiply}
+  .ph::after{content:"";position:absolute;inset:0;opacity:.22;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode:multiply;pointer-events:none}
+  /* Per-project tone variants. Background uses linear gradients (orientation-
+     agnostic). The pseudo overlays are circle-based so they don't distort into
+     ellipses when the placeholder is wider than tall in the grid view. */
+  .ph[data-kind="portrait"]{background:linear-gradient(180deg,#222,#5a5a5a 50%,#878787)}
+  .ph[data-kind="portrait"]::before{background:
+    radial-gradient(circle at 50% 38%, rgba(245,245,245,.55), transparent 22%),
+    radial-gradient(circle at 50% 100%, rgba(0,0,0,.7), transparent 55%);
+    mix-blend-mode:screen}
+  .ph[data-kind="diary"]{background:linear-gradient(120deg,#b2b2b2,#dcdcdc 40%,#8a8a8a)}
+  .ph[data-kind="diary"]::before{background:
+    linear-gradient(28deg,rgba(255,255,255,.5) 0%,transparent 35%,rgba(0,0,0,.25) 65%,transparent 100%);
+    mix-blend-mode:overlay}
+  .ph[data-kind="editorial"]{background:linear-gradient(180deg,#e8e8e8,#979797)}
+  .ph[data-kind="editorial"]::before{background:
+    radial-gradient(circle at 50% 55%, rgba(0,0,0,.45), transparent 28%);
+    mix-blend-mode:multiply}
+  .ph[data-kind="still"]{background:linear-gradient(180deg,#e4e4e4,#b8b8b8)}
+  .ph[data-kind="still"]::before{background:
+    radial-gradient(circle at 50% 60%, rgba(0,0,0,.55), transparent 14%);
+    mix-blend-mode:multiply}
+  .ph[data-kind="landscape"]{background:linear-gradient(180deg,#c2c2c2 0%,#cfcfcf 55%,#7a7a7a 56%,#595959 100%)}
+  .ph[data-kind="landscape"]::before{background:
+    linear-gradient(180deg,transparent 50%,rgba(0,0,0,.18) 56%,transparent 100%);
+    mix-blend-mode:multiply}
+  .ph[data-kind="street"]{background:linear-gradient(95deg,#979797 0%,#cccccc 50%,#777777 100%)}
+  .ph[data-kind="street"]::before{background:
+    radial-gradient(circle at 70% 55%, rgba(0,0,0,.45), transparent 22%);
+    mix-blend-mode:multiply}
+  .ph .ph-label{position:absolute;left:10px;bottom:8px;
+    font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.85);letter-spacing:.04em;
+    mix-blend-mode:difference;white-space:nowrap}
+  .ph .ph-fig{position:absolute;right:10px;top:8px;
+    font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.85);letter-spacing:.04em;
+    mix-blend-mode:difference;white-space:nowrap}
+
+  /* Soft body for project page */
+  ::selection{background:var(--accent);color:#fff}
+
+  /* Scrollbars (subtle) */
+  ::-webkit-scrollbar{height:8px;width:8px}
+  ::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:99px}
+</style>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="data.jsx"></script>
+<script type="text/babel" src="home.jsx"></script>
+<script type="text/babel" src="project.jsx"></script>
+<script type="text/babel" src="app.jsx"></script>
+</body>
+</html>
