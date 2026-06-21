@@ -7,7 +7,7 @@ const BIO = {
   long: "Federica Giglio is an Italian photographer based between Los Angeles and Milan. She works across documentary, fine art, editorial, and commercial photography, creating projects in both film and digital formats.",
   location: "LOS ANGELES, CA",
   origin: "MILANO, IT",
-  email: "fedegiglio01@gmail.com",
+  email: "fedegigliostudio@gmail.com",
   instagram: "@fede.giglio",
   copyright: "© 2024 — 2026 FEDERICA GIGLIO ALL RIGHTS RESERVED",
 };
