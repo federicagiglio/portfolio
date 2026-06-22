@@ -95,6 +95,10 @@ function CTile({ p, goTo }) {
         <span className="ctile-name">{p.title}</span>
         {p.subtitle && <span className="ctile-subtitle mono upper">{p.subtitle}</span>}
         <span className="ctile-sub">{p.cat} · {p.year}</span>
+        <div className="pcard-scroll mono upper ctile-scroll-hint">
+          <span className="pcard-arrow">→</span>
+          <span>scroll horizontally</span>
+        </div>
       </div>
     </a>
   );
@@ -125,10 +129,6 @@ function Works({ layout, goTo }) {
         <CarouselRail>
           {PROJECTS.map((p) => <CTile key={p.id} p={p} goTo={goTo} />)}
         </CarouselRail>
-        <div className="home-scroll-hint mono upper">
-          <span className="home-scroll-arrow">→</span>
-          <span>Scroll to explore</span>
-        </div>
       </section>
     );
   }
@@ -136,10 +136,6 @@ function Works({ layout, goTo }) {
     <section className="works" id="works">
       <div className="grid">
         {PROJECTS.map((p) => <GridTile key={p.id} p={p} goTo={goTo} />)}
-      </div>
-      <div className="home-scroll-hint mono upper">
-        <span className="home-scroll-arrow">↓</span>
-        <span>Scroll to explore</span>
       </div>
     </section>
   );
