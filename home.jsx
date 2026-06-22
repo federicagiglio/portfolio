@@ -82,7 +82,7 @@ function GridTile({ p, goTo }) {
   );
 }
 
-function CTile({ p, goTo }) {
+function CTile({ p, goTo, first }) {
   return (
     <a className="ctile" onClick={(e) => { e.preventDefault(); goTo(p.id); }}
        href={`#${p.id}`}>
@@ -95,10 +95,12 @@ function CTile({ p, goTo }) {
         <span className="ctile-name">{p.title}</span>
         {p.subtitle && <span className="ctile-subtitle mono upper">{p.subtitle}</span>}
         <span className="ctile-sub">{p.cat} · {p.year}</span>
-        <div className="pcard-scroll mono upper ctile-scroll-hint">
-          <span className="pcard-arrow">→</span>
-          <span>scroll horizontally</span>
-        </div>
+        {first && (
+          <div className="pcard-scroll mono upper ctile-scroll-hint">
+            <span className="pcard-arrow">→</span>
+            <span>scroll horizontally</span>
+          </div>
+        )}
       </div>
     </a>
   );
@@ -127,7 +129,7 @@ function Works({ layout, goTo }) {
     return (
       <section className="works-h" id="works">
         <CarouselRail>
-          {PROJECTS.map((p) => <CTile key={p.id} p={p} goTo={goTo} />)}
+          {PROJECTS.map((p, i) => <CTile key={p.id} p={p} goTo={goTo} first={i === 0} />)}
         </CarouselRail>
       </section>
     );
