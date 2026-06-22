@@ -57,8 +57,8 @@ function App() {
     document.documentElement.style.setProperty('--tile-blur', t.blurIntensity + 'px');
   }, [t.accent, t.blurIntensity]);
 
-  const goTo = (p) => {
-    if (p === page) return;
+  // Navigate with browser history so back/forward buttons work.
+  const navigate = (p, pushHistory) => {
     setPhase('leaving');
     window.setTimeout(() => {
       setPage(p);
@@ -66,7 +66,28 @@ function App() {
       setPhase('entering');
       window.setTimeout(() => setPhase('idle'), 30);
     }, 380);
+    if (pushHistory !== false) {
+      const url = p === 'home' ? window.location.pathname : window.location.pathname + '#' + p;
+      window.history.pushState({ page: p }, '', url);
+    }
   };
+
+  const goTo = (p) => {
+    if (p === page) return;
+    navigate(p, true);
+  };
+
+  // Listen for browser back/forward button.
+  useEffectA(() => {
+    const onPop = (e) => {
+      const p = (e.state && e.state.page) ? e.state.page : 'home';
+      navigate(p, false);
+    };
+    window.addEventListener('popstate', onPop);
+    // Set initial history state.
+    window.history.replaceState({ page: 'home' }, '', window.location.href);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
 
   // Settle "entering" → "idle" on the next frame so the blur unwinds.
   useEffectA(() => {

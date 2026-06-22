@@ -125,6 +125,10 @@ function Works({ layout, goTo }) {
         <CarouselRail>
           {PROJECTS.map((p) => <CTile key={p.id} p={p} goTo={goTo} />)}
         </CarouselRail>
+        <div className="home-scroll-hint mono upper">
+          <span className="home-scroll-arrow">→</span>
+          <span>Scroll to explore</span>
+        </div>
       </section>
     );
   }
@@ -132,6 +136,10 @@ function Works({ layout, goTo }) {
     <section className="works" id="works">
       <div className="grid">
         {PROJECTS.map((p) => <GridTile key={p.id} p={p} goTo={goTo} />)}
+      </div>
+      <div className="home-scroll-hint mono upper">
+        <span className="home-scroll-arrow">↓</span>
+        <span>Scroll to explore</span>
       </div>
     </section>
   );

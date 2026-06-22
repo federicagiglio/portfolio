@@ -258,6 +258,9 @@
 .lb-close{color:var(--accent);margin-left:8px}
 .lb-close:hover{color:#fff}
 
+/* ─── Mobile scroll hint (home page) ───────────────────────────────── */
+.home-scroll-hint{display:none} /* hidden on desktop */
+
 /* ─── Responsive ─────────────────────────────────────────────────────── */
 @media (max-width:900px){
   .home{height:auto;min-height:100vh;display:flex;flex-direction:column;grid-template-rows:none}
@@ -272,6 +275,12 @@
   
   .bot{grid-template-columns:1fr;gap:8px;text-align:left}
   .bot-c,.bot-r{text-align:left;justify-content:flex-start}
+  
+  /* Mobile scroll hint */
+  .home-scroll-hint{display:flex;gap:8px;align-items:center;color:#888;
+    font-size:10px;letter-spacing:.08em;padding:10px 6px 4px;}
+  .home-scroll-arrow{color:var(--accent);font-size:13px;
+    animation:nudge 1.6s ease-in-out infinite}
 }
 
 @media (max-width:600px){
