@@ -79,7 +79,7 @@ const PROJECTS = [
     long: "Editorial.",
     cover: "lola/03.jpg",
     localVideo: "lola/lola_raw.mp4",
-    figs: 
+    figs: [
       { w:2, h:3, n:"01", src:"lola/03.jpg" },
       { w:2, h:3, n:"02", src:"lola/13.jpg" },
       { w:3, h:2, n:"03", src:"lola/16 2.jpg" },
@@ -89,7 +89,6 @@ const PROJECTS = [
       { w:2, h:3, n:"07", src:"lola/36.jpg" },
       { w:3, h:2, n:"08", src:"lola/49.jpg" },
       { w:2, h:3, n:"09", src:"lola/50.jpg" },
-<<<<<<< HEAD
       { w:2, h:3, n:"10", src:"lola/Giglio_10.jpg" },
       { w:2, h:3, n:"11", src:"lola/Giglio_11.jpg" },
       { w:2, h:3, n:"12", src:"lola/Giglio_12.jpg" },
@@ -97,15 +96,6 @@ const PROJECTS = [
       { w:2, h:3, n:"14", src:"lola/Giglio_14.jpg" },
       { w:2, h:3, n:"15", src:"lola/Giglio_15.jpg" },
     ],
-=======
-      { w:2, h:3, n:"10", src:"lola/Giglio_PostcardsFromNowhere-10.jpg" },
-      { w:2, h:3, n:"11", src:"lola/Giglio_PostcardsFromNowhere-11.jpg" },
-      { w:2, h:3, n:"12", src:"lola/Giglio_PostcardsFromNowhere-12.jpg" },
-      { w:2, h:3, n:"13", src:"lola/Giglio_PostcardsFromNowhere-13.jpg" },
-      { w:2, h:3, n:"14", src:"lola/Giglio_PostcardsFromNowhere-14.jpg" },
-      { w:2, h:3, n:"15", src:"lola/Giglio_PostcardsFromNowhere-15.jpg" },
-     ],
->>>>>>> b473a4fd7f5b6771cabdd70b8225c55075a815b1
   },
   {
     id: "postcard-from-nowhere",
@@ -202,11 +192,7 @@ const PROJECTS = [
       { w:2, h:3, n:"18", src:"visual diary/DUNE_01.jpg" },
       { w:2, h:3, n:"19", src:"visual diary/DUNE_02.jpg" },
       { w:3, h:2, n:"20", src:"visual diary/FeGiglio_ColorScheme.jpg" },
-<<<<<<< HEAD
       { w:2, h:3, n:"21", src:"visual diary/Giglio_-1.jpg" },
-=======
-      { w:2, h:3, n:"21", src:"visual diary/Giglio_PostcardsFromNowhere-1.jpg" },
->>>>>>> b473a4fd7f5b6771cabdd70b8225c55075a815b1
       { w:3, h:2, n:"22", src:"visual diary/GiglioF_02_Concept_Term1.jpg" },
       { w:3, h:2, n:"23", src:"visual diary/GiglioF_04_Concept_Term1.jpg" },
       { w:3, h:2, n:"24", src:"visual diary/GreenCar.jpg" },
