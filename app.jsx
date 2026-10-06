@@ -48,9 +48,10 @@ function Cursor({ accent }) {
 
 function App() {
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
-  // Detect #portfolio secret route on first load.
-  const initPage = window.location.hash === '#portfolio' ? 'portfolio' : 'home';
-  const [page, setPage] = useStateA(initPage);
+  // Detect #portfolio secret route on first load (lazy initializer — only runs once).
+  const [page, setPage] = useStateA(() =>
+    window.location.hash === '#portfolio' ? 'portfolio' : 'home'
+  );
   const [phase, setPhase] = useStateA('idle'); // idle | leaving | entering
 
   // Sync CSS vars from tweaks.
@@ -89,6 +90,7 @@ function App() {
     };
     window.addEventListener('popstate', onPop);
     // Set initial history state — preserve #portfolio if that's the entry point.
+    const initPage = window.location.hash === '#portfolio' ? 'portfolio' : 'home';
     window.history.replaceState({ page: initPage }, '', window.location.href);
     return () => window.removeEventListener('popstate', onPop);
   }, []);
@@ -114,7 +116,9 @@ function App() {
       <div className={stageClass} style={page === 'portfolio' ? {display:'none'} : undefined}>
         {page === 'home'
           ? <Home tweaks={t} goTo={goTo} />
-          : <Project id={page} goTo={goTo} />}
+          : page !== 'portfolio'
+            ? <Project id={page} goTo={goTo} />
+            : null}
       </div>
 
       <TweaksPanel title="Tweaks">
