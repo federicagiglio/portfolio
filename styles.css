@@ -323,3 +323,178 @@
   .lb{height:100dvh}
   .lb-img{max-height:80dvh;max-width:100vw}
 }
+
+/* ─── Flipbook (Secret Page) ─────────────────────────────────────────────── */
+
+.fb-root{
+  position:fixed;inset:0;
+  background:#0a0a0a;
+  color:#f5f5f0;
+  display:grid;
+  grid-template-rows:auto auto 1fr auto auto;
+  overflow:hidden;
+  z-index:1000;
+}
+
+/* Header */
+.fb-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 24px 12px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  gap:12px;
+}
+.fb-back{
+  display:flex;align-items:center;gap:8px;
+  background:none;border:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.55);padding:5px 12px;
+  font-size:10px;letter-spacing:.08em;
+  cursor:none;transition:color .2s,border-color .2s;
+  white-space:nowrap;
+}
+.fb-back:hover{color:#fff;border-color:rgba(255,255,255,.35)}
+.fb-back-arrow{font-size:13px;line-height:1;margin-top:-1px}
+.fb-header-center{
+  display:flex;align-items:center;gap:8px;
+  font-size:10.5px;letter-spacing:.08em;color:rgba(255,255,255,.45);
+  flex:1;justify-content:center;
+}
+.fb-brand{color:rgba(255,255,255,.85)}
+.fb-sep{opacity:.3}
+.fb-header-proj{color:var(--accent)}
+.fb-counter{
+  font-size:11px;letter-spacing:.04em;
+  color:rgba(255,255,255,.35);white-space:nowrap;
+}
+.fb-counter-cur{color:rgba(255,255,255,.7);font-size:14px}
+
+/* Project selector */
+.fb-projects{
+  display:flex;gap:0;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  overflow-x:auto;scrollbar-width:none;
+}
+.fb-projects::-webkit-scrollbar{display:none}
+.fb-proj-btn{
+  display:flex;align-items:center;gap:7px;
+  background:none;border:none;border-right:1px solid rgba(255,255,255,.06);
+  color:rgba(255,255,255,.35);padding:8px 18px;
+  font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+  cursor:none;transition:color .2s,background .2s;white-space:nowrap;
+  flex-shrink:0;
+}
+.fb-proj-btn:hover{color:rgba(255,255,255,.7);background:rgba(255,255,255,.03)}
+.fb-proj-btn--active{color:#fff;background:rgba(255,255,255,.04)}
+.fb-proj-btn--active .fb-proj-num{color:var(--accent)}
+.fb-proj-num{font-size:9px;color:rgba(255,255,255,.25)}
+.fb-proj-title{}
+
+/* Stage — fills remaining space */
+.fb-stage{
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  cursor:none;
+  user-select:none;
+}
+
+/* Book container */
+.fb-book{
+  position:relative;
+  height:100%;width:100%;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* Pages */
+.fb-page{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+}
+.fb-page--active{
+  opacity:1;pointer-events:auto;
+}
+
+/* Cinematic flip-in animations */
+@keyframes fb-enter-next{
+  from{opacity:0;transform:perspective(1200px) rotateY(-8deg) scale(.97) translateX(3%)}
+  to  {opacity:1;transform:perspective(1200px) rotateY(0deg)  scale(1)   translateX(0)}
+}
+@keyframes fb-enter-prev{
+  from{opacity:0;transform:perspective(1200px) rotateY(8deg) scale(.97) translateX(-3%)}
+  to  {opacity:1;transform:perspective(1200px) rotateY(0deg) scale(1)   translateX(0)}
+}
+.fb-page--entering-next{animation:fb-enter-next .48s cubic-bezier(.25,.46,.45,.94) both}
+.fb-page--entering-prev{animation:fb-enter-prev .48s cubic-bezier(.25,.46,.45,.94) both}
+
+/* Image sizing */
+.fb-img{
+  max-height:calc(100% - 0px);
+  max-width:100%;
+  object-fit:contain;
+  display:block;
+  box-shadow:0 24px 80px rgba(0,0,0,.7),0 4px 18px rgba(0,0,0,.5);
+}
+
+/* Spine shadow — subtle book feel */
+.fb-spine{
+  position:absolute;top:0;bottom:0;left:50%;
+  width:1px;
+  background:linear-gradient(to bottom,transparent,rgba(255,255,255,.04) 20%,rgba(255,255,255,.07) 50%,rgba(255,255,255,.04) 80%,transparent);
+  pointer-events:none;z-index:1;
+}
+
+/* Click zones — appear on hover */
+.fb-zone{
+  position:absolute;top:0;bottom:0;width:40%;
+  display:flex;align-items:center;
+  opacity:0;transition:opacity .22s;z-index:10;
+  cursor:none;
+}
+.fb-stage:hover .fb-zone{opacity:1}
+.fb-zone--prev{left:0;justify-content:flex-start;padding-left:24px}
+.fb-zone--next{right:0;justify-content:flex-end;padding-right:24px}
+.fb-zone-arrow{
+  font-size:40px;font-weight:200;
+  color:rgba(255,255,255,.18);
+  transition:color .18s,transform .18s;
+  line-height:1;
+  text-shadow:0 2px 12px rgba(0,0,0,.5);
+}
+.fb-zone--prev:hover .fb-zone-arrow{color:rgba(255,255,255,.5);transform:translateX(-4px)}
+.fb-zone--next:hover .fb-zone-arrow{color:rgba(255,255,255,.5);transform:translateX(4px)}
+
+/* Dots */
+.fb-dots{
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  padding:10px 0 6px;min-height:32px;
+}
+.fb-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:rgba(255,255,255,.18);border:none;padding:0;
+  cursor:none;transition:background .2s,transform .2s;
+}
+.fb-dot:hover{background:rgba(255,255,255,.45);transform:scale(1.3)}
+.fb-dot--active{background:#fff;transform:scale(1.25)}
+.fb-dot-ellipsis{color:rgba(255,255,255,.2);font-size:9px;line-height:1}
+
+/* Footer caption */
+.fb-footer{
+  display:flex;align-items:center;justify-content:center;gap:0;
+  font-size:9.5px;letter-spacing:.08em;
+  color:rgba(255,255,255,.28);
+  padding:8px 24px 14px;
+  border-top:1px solid rgba(255,255,255,.06);
+}
+.fb-footer-cat,.fb-footer-loc,.fb-footer-year,.fb-footer-frame{color:rgba(255,255,255,.45)}
+.fb-footer-sep{color:rgba(255,255,255,.15);padding:0 4px}
+
+/* ── Flipbook mobile ─────────────────────────────────────────────────────── */
+@media (max-width:640px){
+  .fb-header{padding:12px 16px 10px}
+  .fb-header-center{display:none}
+  .fb-proj-btn{padding:7px 12px;font-size:8.5px}
+  .fb-zone{opacity:1}
+  .fb-zone--prev{width:30%}
+  .fb-zone--next{width:30%}
+  .fb-footer{font-size:8.5px}
+}

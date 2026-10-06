@@ -48,7 +48,9 @@ function Cursor({ accent }) {
 
 function App() {
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
-  const [page, setPage] = useStateA('home');
+  // Detect #portfolio secret route on first load.
+  const initPage = window.location.hash === '#portfolio' ? 'portfolio' : 'home';
+  const [page, setPage] = useStateA(initPage);
   const [phase, setPhase] = useStateA('idle'); // idle | leaving | entering
 
   // Sync CSS vars from tweaks.
@@ -67,7 +69,9 @@ function App() {
       window.setTimeout(() => setPhase('idle'), 30);
     }, 380);
     if (pushHistory !== false) {
-      const url = p === 'home' ? window.location.pathname : window.location.pathname + '#' + p;
+      const url = (p === 'home')
+        ? window.location.pathname
+        : window.location.pathname + '#' + p;
       window.history.pushState({ page: p }, '', url);
     }
   };
@@ -84,8 +88,8 @@ function App() {
       navigate(p, false);
     };
     window.addEventListener('popstate', onPop);
-    // Set initial history state.
-    window.history.replaceState({ page: 'home' }, '', window.location.href);
+    // Set initial history state — preserve #portfolio if that's the entry point.
+    window.history.replaceState({ page: initPage }, '', window.location.href);
     return () => window.removeEventListener('popstate', onPop);
   }, []);
 
@@ -101,7 +105,13 @@ function App() {
   return (
     <>
       <Cursor accent={t.accent} />
-      <div className={stageClass}>
+
+      {/* Secret flipbook — rendered outside the normal stage so it covers everything */}
+      {page === 'portfolio' && (
+        <Flipbook goBack={() => goTo('home')} />
+      )}
+
+      <div className={stageClass} style={page === 'portfolio' ? {display:'none'} : undefined}>
         {page === 'home'
           ? <Home tweaks={t} goTo={goTo} />
           : <Project id={page} goTo={goTo} />}
