@@ -82,17 +82,25 @@ function App() {
     navigate(p, true);
   };
 
-  // Listen for browser back/forward button.
+  // Listen for browser back/forward button and URL hash changes.
   useEffectA(() => {
     const onPop = (e) => {
-      const p = (e.state && e.state.page) ? e.state.page : 'home';
+      const p = (e.state && e.state.page) ? e.state.page : (window.location.hash === '#portfolio' ? 'portfolio' : 'home');
       navigate(p, false);
     };
+    const onHash = () => {
+      const target = window.location.hash === '#portfolio' ? 'portfolio' : (window.location.hash ? window.location.hash.slice(1) : 'home');
+      navigate(target, false);
+    };
     window.addEventListener('popstate', onPop);
+    window.addEventListener('hashchange', onHash);
     // Set initial history state — preserve #portfolio if that's the entry point.
     const initPage = window.location.hash === '#portfolio' ? 'portfolio' : 'home';
     window.history.replaceState({ page: initPage }, '', window.location.href);
-    return () => window.removeEventListener('popstate', onPop);
+    return () => {
+      window.removeEventListener('popstate', onPop);
+      window.removeEventListener('hashchange', onHash);
+    };
   }, []);
 
   // Settle "entering" → "idle" on the next frame so the blur unwinds.
