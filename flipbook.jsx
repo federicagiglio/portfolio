@@ -1,28 +1,14 @@
-// flipbook.jsx — Secret portfolio — realistic physical book.
+// flipbook.jsx — Realistic physical linen book portfolio
 // Access via: yoursite.com/#portfolio
-//
-// ╔══════════════════════════════════════════════════════╗
-// ║  HOW TO UPDATE YOUR BOOK                            ║
-// ║                                                      ║
-// ║  1. Put your photos in the  flipbook/  folder       ║
-// ║     cover.jpg          → front cover photo          ║
-// ║     back-cover.jpg     → back cover (optional)      ║
-// ║     01.jpg, 02.jpg …   → interior pages in order   ║
-// ║                                                      ║
-// ║  2. Edit the PHOTOS array below to list your files  ║
-// ╚══════════════════════════════════════════════════════╝
 
 const { useState: useFBState, useEffect: useFBEffect, useCallback: useFBCb } = React;
 
 // ─── BOOK CONFIGURATION ──────────────────────────────────────────────────────
 const BOOK = {
-  author:   'FEDERICA GIGLIO',
-  subtitle: 'PORTFOLIO',
-  year:     '2019 — 2026',
-  cover:    'flipbook/cover.jpg',
-  back:     'flipbook/back-cover.jpg',
+  author: ['FEDERICA', 'GIGLIO'],
+  cover:  'flipbook/cover.jpg',
+  back:   'flipbook/back-cover.jpg',
 
-  // ↓ Add or remove filenames here to update the book pages ↓
   photos: [
     'flipbook/01.jpg',
     'flipbook/02.jpg',
@@ -34,12 +20,40 @@ const BOOK = {
     'flipbook/08.jpg',
     'flipbook/09.jpg',
     'flipbook/10.jpg',
+    'flipbook/11.jpg',
+    'flipbook/12.jpg',
+    'flipbook/13.jpg',
+    'flipbook/14.jpg',
+    'flipbook/15.jpg',
+    'flipbook/16.jpg',
+    'flipbook/16 2.jpg',
+    'flipbook/17.jpg',
+    'flipbook/18.jpg',
+    'flipbook/19.jpg',
+    'flipbook/20.jpg',
+    'flipbook/21.jpg',
+    'flipbook/22.jpg',
+    'flipbook/23.jpg',
+    'flipbook/25.jpg',
+    'flipbook/26.jpg',
+    'flipbook/27.jpg',
+    'flipbook/28.jpg',
+    'flipbook/29.jpg',
+    'flipbook/30.jpg',
+    'flipbook/31.jpg',
+    'flipbook/32.jpg',
+    'flipbook/33.jpg',
+    'flipbook/34.jpg',
+    'flipbook/35.jpg',
+    'flipbook/37.jpg',
+    'flipbook/POST_CASA_SUM23.jpg',
+    'flipbook/DSC_5331b.jpg',
   ],
 };
 // ─────────────────────────────────────────────────────────────────────────────
 
 // Pair photos into [{left, right}] spreads.
-// First spread: title page (left) + photo[0] (right).
+// Spread 0: title page ("Portfolio") on the left + first photo on the right.
 function buildSpreads(photos) {
   const s = [];
   s.push({ left: 'TITLE', right: photos[0] ?? null });
@@ -54,17 +68,52 @@ function PageFace({ src }) {
   if (src === 'TITLE') {
     return (
       <div className="fbook-title-page">
-        <span className="fbook-title-name mono upper">{BOOK.author}</span>
-        <div className="fbook-title-rule" />
-        <span className="fbook-title-sub mono upper">{BOOK.subtitle}</span>
-        <span className="fbook-title-year mono">{BOOK.year}</span>
+        <h1 className="fbook-title-word">Portfolio</h1>
       </div>
     );
   }
   if (!src) return <div className="fbook-page-blank" />;
+  const safeSrc = encodeURI(src);
   return (
     <div className="fbook-page-photo">
-      <img src={src} alt="" className="fbook-photo-img" draggable={false} />
+      <img src={safeSrc} alt="" className="fbook-photo-img" draggable={false} />
+    </div>
+  );
+}
+
+// ─── Cover faces (Francesca Woodman style linen cover) ────────────────────────
+function CoverFrontFace() {
+  return (
+    <div className="fbook-cover-front fbook-linen-texture">
+      <div className="fbook-cover-hinge" />
+      <div className="fbook-cover-author">
+        <span className="fbook-cover-line">{BOOK.author[0]}</span>
+        <span className="fbook-cover-line">{BOOK.author[1]}</span>
+      </div>
+      <div className="fbook-cover-plate">
+        <img
+          src={encodeURI(BOOK.cover)}
+          alt="Portfolio Cover"
+          className="fbook-cover-plate-img"
+          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function CoverBackFace() {
+  return (
+    <div className="fbook-cover-back fbook-linen-texture">
+      <div className="fbook-cover-hinge fbook-cover-hinge-back" />
+      {BOOK.back ? (
+        <img
+          src={encodeURI(BOOK.back)}
+          alt="Back cover"
+          className="fbook-cover-plate-img"
+          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+        />
+      ) : null}
     </div>
   );
 }
@@ -72,9 +121,9 @@ function PageFace({ src }) {
 // ─── 3D Closed book ───────────────────────────────────────────────────────────
 function BookClosed({ front, onClick }) {
   return (
-    <div className="fbook-closed-wrap">
+    <div className="fbook-closed-stage">
       <div
-        className="fbook-book3d"
+        className="fbook-book3d fbook-linen-texture"
         onClick={onClick}
         role={onClick ? 'button' : undefined}
         tabIndex={onClick ? 0 : undefined}
@@ -85,44 +134,9 @@ function BookClosed({ front, onClick }) {
         <div className="fbook-3d-bottom" />
         <div className={front ? "fbook-3d-spine" : "fbook-3d-spine fbook-3d-spine-back"} />
 
-        {/* Main cover face */}
+        {/* Cover face */}
         <div className="fbook-3d-face">
-          {front ? (
-            <div className="fbook-cover-front">
-              <div className="fbook-cover-hinge" />
-              <div className="fbook-cover-author mono upper">{BOOK.author}</div>
-              <div className="fbook-cover-plate">
-                <img
-                  src={BOOK.cover}
-                  alt="Portfolio cover"
-                  className="fbook-cover-plate-img"
-                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                />
-              </div>
-              <div className="fbook-cover-footer">
-                <span className="fbook-cover-sub mono upper">{BOOK.subtitle}</span>
-                <span className="fbook-cover-year mono">{BOOK.year}</span>
-              </div>
-            </div>
-          ) : (
-            <div className="fbook-cover-back">
-              <div className="fbook-cover-hinge fbook-cover-hinge-back" />
-              {BOOK.back ? (
-                <img
-                  src={BOOK.back}
-                  alt="Back cover"
-                  className="fbook-cover-plate-img"
-                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                />
-              ) : (
-                <div className="fbook-back-content">
-                  <span className="fbook-back-author mono upper">{BOOK.author}</span>
-                  <div className="fbook-back-rule" />
-                  <span className="fbook-back-sub mono upper">PORTFOLIO</span>
-                </div>
-              )}
-            </div>
-          )}
+          {front ? <CoverFrontFace /> : <CoverBackFace />}
         </div>
       </div>
 
@@ -136,20 +150,111 @@ function BookClosed({ front, onClick }) {
   );
 }
 
-// ─── Open book spread with CSS 3D page flip ───────────────────────────────────
-function BookOpen({ spreads, idx, onIdx, onClose }) {
+// ─── 3D Book Opening Animation ────────────────────────────────────────────────
+function BookOpening({ spreads, onDone }) {
+  return (
+    <div className="fbook-opening-stage">
+      <div className="fbook-spread fbook-spread-opening">
+        {/* Left page underneath: Title */}
+        <div className="fbook-page fbook-page-l">
+          <PageFace src="TITLE" />
+        </div>
+
+        {/* Spine crease */}
+        <div className="fbook-spine-bar" />
+
+        {/* Right page underneath: photo 01 */}
+        <div className="fbook-page fbook-page-r">
+          <PageFace src={spreads[0].right} />
+          <span className="fbook-pn fbook-pn-r mono">01</span>
+        </div>
+
+        {/* Turning front cover leaf swinging 180° in 3D */}
+        <div className="fbook-leaf-flipper fbook-leaf-flipper-opening" onAnimationEnd={onDone}>
+          <div className="fbook-leaf-front fbook-linen-texture">
+            <CoverFrontFace />
+          </div>
+          <div className="fbook-leaf-back">
+            <div className="fbook-page-blank" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── 3D Book Closing to Front Animation ───────────────────────────────────────
+function BookClosingFront({ spreads, onDone }) {
+  return (
+    <div className="fbook-opening-stage">
+      <div className="fbook-spread fbook-spread-closing-front">
+        <div className="fbook-page fbook-page-l">
+          <PageFace src="TITLE" />
+        </div>
+        <div className="fbook-spine-bar" />
+        <div className="fbook-page fbook-page-r">
+          <PageFace src={spreads[0].right} />
+          <span className="fbook-pn fbook-pn-r mono">01</span>
+        </div>
+        <div className="fbook-leaf-flipper fbook-leaf-flipper-closing-front" onAnimationEnd={onDone}>
+          <div className="fbook-leaf-front fbook-linen-texture">
+            <CoverFrontFace />
+          </div>
+          <div className="fbook-leaf-back">
+            <div className="fbook-page-blank" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── 3D Book Closing to Back Animation ────────────────────────────────────────
+function BookClosingBack({ spreads, idx, onDone }) {
+  const cur = spreads[idx];
+  return (
+    <div className="fbook-opening-stage">
+      <div className="fbook-spread fbook-spread-closing-back">
+        <div className="fbook-page fbook-page-l">
+          <PageFace src={cur.left} />
+        </div>
+        <div className="fbook-spine-bar" />
+        <div className="fbook-page fbook-page-r">
+          <PageFace src={cur.right} />
+        </div>
+        <div className="fbook-leaf-flipper fbook-leaf-flipper-closing-back" onAnimationEnd={onDone}>
+          <div className="fbook-leaf-front">
+            <div className="fbook-page-blank" />
+          </div>
+          <div className="fbook-leaf-back fbook-linen-texture">
+            <CoverBackFace />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Open book spread with outside navigation arrows & 3D page flip ───────────
+function BookOpen({ spreads, idx, onIdx, onCloseFront, onCloseBack }) {
   const [flip, setFlip] = useFBState(null); // null | {dir:'next'|'prev', from, to}
 
   const go = useFBCb((dir) => {
     if (flip) return;
     if (dir === 'next') {
-      if (idx >= spreads.length - 1) { onClose('back'); return; }
+      if (idx >= spreads.length - 1) {
+        onCloseBack();
+        return;
+      }
       setFlip({ dir: 'next', from: idx, to: idx + 1 });
     } else {
-      if (idx === 0) { onClose('front'); return; }
+      if (idx === 0) {
+        onCloseFront();
+        return;
+      }
       setFlip({ dir: 'prev', from: idx, to: idx - 1 });
     }
-  }, [flip, idx, spreads.length, onClose]);
+  }, [flip, idx, spreads.length, onCloseFront, onCloseBack]);
 
   const onFlipEnd = useFBCb(() => {
     if (!flip) return;
@@ -169,8 +274,6 @@ function BookOpen({ spreads, idx, onIdx, onClose }) {
   const cur  = spreads[idx];
   const dest = flip ? spreads[flip.to] : null;
 
-  // Background content updates as soon as flip starts, creating the
-  // "page underneath" effect that is revealed as the flipper lifts.
   const bgL = flip
     ? (flip.dir === 'next' ? cur.left   : dest.left)
     : cur.left;
@@ -183,96 +286,109 @@ function BookOpen({ spreads, idx, onIdx, onClose }) {
   const pnR =           String(idx * 2 + 1).padStart(2, '0');
 
   return (
-    <div className="fbook-spread">
-      {/* Left page */}
-      <div
-        className="fbook-page fbook-page-l"
+    <div className="fbook-stage-open-wrap">
+      {/* Outside Left Arrow */}
+      <button
+        className="fbook-arrow-btn fbook-arrow-prev"
         onClick={() => go('prev')}
-        title="Click to go back"
-        style={{ cursor: 'pointer' }}
+        title={idx === 0 ? "Close book" : "Previous page"}
+        aria-label="Previous page"
       >
-        <PageFace src={bgL} />
-        {bgL && bgL !== 'TITLE' && pnL && (
-          <span className="fbook-pn fbook-pn-l mono">{pnL}</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
+
+      {/* Book Spread */}
+      <div className="fbook-spread">
+        {/* Left page (clicking turns prev) */}
+        <div
+          className="fbook-page fbook-page-l"
+          onClick={() => go('prev')}
+          title="Click to turn back"
+        >
+          <PageFace src={bgL} />
+          {bgL && bgL !== 'TITLE' && pnL && (
+            <span className="fbook-pn fbook-pn-l mono">{pnL}</span>
+          )}
+        </div>
+
+        {/* Spine crease */}
+        <div className="fbook-spine-bar" />
+
+        {/* Right page (clicking turns next) */}
+        <div
+          className="fbook-page fbook-page-r"
+          onClick={() => go('next')}
+          title="Click to turn page"
+        >
+          <PageFace src={bgR} />
+          {bgR && <span className="fbook-pn fbook-pn-r mono">{pnR}</span>}
+        </div>
+
+        {/* ── Flipper: right page turns left (next) ── */}
+        {flip?.dir === 'next' && (
+          <div className="fbook-flipper fbook-flipper-r" onAnimationEnd={onFlipEnd}>
+            <div className="fbook-flip-front">
+              <PageFace src={cur.right} />
+              <div className="fbook-flip-shade fbook-flip-shade-front" />
+            </div>
+            <div className="fbook-flip-back">
+              <PageFace src={dest.left} />
+              <div className="fbook-flip-shade fbook-flip-shade-back" />
+            </div>
+          </div>
         )}
+
+        {/* ── Flipper: left page turns right (prev) ── */}
+        {flip?.dir === 'prev' && (
+          <div className="fbook-flipper fbook-flipper-l" onAnimationEnd={onFlipEnd}>
+            <div className="fbook-flip-front">
+              <PageFace src={cur.left} />
+              <div className="fbook-flip-shade fbook-flip-shade-front" />
+            </div>
+            <div className="fbook-flip-back">
+              <PageFace src={dest.right} />
+              <div className="fbook-flip-shade fbook-flip-shade-back" />
+            </div>
+          </div>
+        )}
+
+        {/* Spread counter at bottom */}
+        <div className="fbook-counter mono">
+          {idx + 1} / {spreads.length}
+        </div>
       </div>
 
-      {/* Spine */}
-      <div className="fbook-spine-bar" />
-
-      {/* Right page */}
-      <div
-        className="fbook-page fbook-page-r"
+      {/* Outside Right Arrow */}
+      <button
+        className="fbook-arrow-btn fbook-arrow-next"
         onClick={() => go('next')}
-        title="Click to turn page"
-        style={{ cursor: 'pointer' }}
+        title={idx === spreads.length - 1 ? "Close book" : "Next page"}
+        aria-label="Next page"
       >
-        <PageFace src={bgR} />
-        {bgR && <span className="fbook-pn fbook-pn-r mono">{pnR}</span>}
-      </div>
-
-      {/* ── Flipper: right page turns left (next) ── */}
-      {flip?.dir === 'next' && (
-        <div className="fbook-flipper fbook-flipper-r" onAnimationEnd={onFlipEnd}>
-          <div className="fbook-flip-front">
-            <PageFace src={cur.right} />
-          </div>
-          <div className="fbook-flip-back">
-            <PageFace src={dest.left} />
-          </div>
-        </div>
-      )}
-
-      {/* ── Flipper: left page turns right (prev) ── */}
-      {flip?.dir === 'prev' && (
-        <div className="fbook-flipper fbook-flipper-l" onAnimationEnd={onFlipEnd}>
-          <div className="fbook-flip-front">
-            <PageFace src={cur.left} />
-          </div>
-          <div className="fbook-flip-back">
-            <PageFace src={dest.right} />
-          </div>
-        </div>
-      )}
-
-      {/* Navigation zones */}
-      <div className="fbook-nav fbook-nav-l" onClick={() => go('prev')}>
-        <span className="fbook-nav-arrow">‹</span>
-      </div>
-      <div className="fbook-nav fbook-nav-r" onClick={() => go('next')}>
-        <span className="fbook-nav-arrow">›</span>
-      </div>
-
-      {/* Spread counter */}
-      <div className="fbook-counter mono">
-        {idx + 1} / {spreads.length}
-      </div>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </button>
     </div>
   );
 }
 
-// ─── Main Flipbook component ──────────────────────────────────────────────────
+// ─── Main Flipbook Component ──────────────────────────────────────────────────
 function Flipbook({ goBack }) {
   const spreads = buildSpreads(BOOK.photos);
-  const [view,    setView]    = useFBState('closed'); // 'closed' | 'open' | 'back'
-  const [idx,     setIdx]     = useFBState(0);
-  const [leaving, setLeaving] = useFBState(false);
+  // 'closed' | 'opening' | 'open' | 'closing-front' | 'closing-back' | 'back'
+  const [view, setView] = useFBState('closed');
+  const [idx,  setIdx]  = useFBState(0);
 
-  // Animated transition helper
-  const transitionTo = useFBCb((nextView, resetIdx) => {
-    setLeaving(true);
-    setTimeout(() => {
-      if (resetIdx) setIdx(0);
-      setView(nextView);
-      setLeaving(false);
-    }, 480);
-  }, []);
-
-  const openBook  = useFBCb(() => { if (view === 'closed') transitionTo('open'); }, [view, transitionTo]);
-  const closeBook = useFBCb((side) => {
-    transitionTo(side === 'back' ? 'back' : 'closed', side !== 'back');
-  }, [transitionTo]);
-  const restart   = useFBCb(() => transitionTo('closed', true), [transitionTo]);
+  const openBook      = useFBCb(() => setView('opening'), []);
+  const onOpened      = useFBCb(() => { setIdx(0); setView('open'); }, []);
+  const closeToFront  = useFBCb(() => setView('closing-front'), []);
+  const onClosedFront = useFBCb(() => { setIdx(0); setView('closed'); }, []);
+  const closeToBack   = useFBCb(() => setView('closing-back'), []);
+  const onClosedBack  = useFBCb(() => setView('back'), []);
+  const restart       = useFBCb(() => { setIdx(0); setView('opening'); }, []);
 
   useFBEffect(() => {
     const h = (e) => { if (e.key === 'Escape') goBack(); };
@@ -280,38 +396,40 @@ function Flipbook({ goBack }) {
     return () => window.removeEventListener('keydown', h);
   }, [goBack]);
 
-  const sceneCls = `fbook-scene${leaving ? ' fbook-leaving' : ' fbook-entering'}`;
-
   return (
     <div className="fbook-root">
-      {/* Minimal header */}
+      {/* Minimal gallery header */}
       <header className="fbook-header">
         <button className="fbook-back mono upper" onClick={goBack}>← Back</button>
-        <span className="fbook-header-title mono upper">{BOOK.author}</span>
+        <span className="fbook-header-title mono upper">{BOOK.author[0]} {BOOK.author[1]}</span>
         <div className="fbook-header-r" />
       </header>
 
-      {/* Book stage */}
+      {/* Book Stage */}
       <div className="fbook-stage">
         {view === 'closed' && (
-          <div className={sceneCls}>
-            <BookClosed front onClick={openBook} />
-          </div>
+          <BookClosed front onClick={openBook} />
+        )}
+        {view === 'opening' && (
+          <BookOpening spreads={spreads} onDone={onOpened} />
         )}
         {view === 'open' && (
-          <div className={sceneCls}>
-            <BookOpen
-              spreads={spreads}
-              idx={idx}
-              onIdx={setIdx}
-              onClose={closeBook}
-            />
-          </div>
+          <BookOpen
+            spreads={spreads}
+            idx={idx}
+            onIdx={setIdx}
+            onCloseFront={closeToFront}
+            onCloseBack={closeToBack}
+          />
+        )}
+        {view === 'closing-front' && (
+          <BookClosingFront spreads={spreads} onDone={onClosedFront} />
+        )}
+        {view === 'closing-back' && (
+          <BookClosingBack spreads={spreads} idx={idx} onDone={onClosedBack} />
         )}
         {view === 'back' && (
-          <div className={sceneCls}>
-            <BookClosed front={false} onClick={restart} />
-          </div>
+          <BookClosed front={false} onClick={restart} />
         )}
       </div>
     </div>

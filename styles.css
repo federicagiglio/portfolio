@@ -325,7 +325,15 @@
 }
 
 
-/* ─── Flipbook (Physical Art Book — Secret Page) ─────────────────────────── */
+
+/* ─── Flipbook (Physical Linen Art Book — Secret Page) ───────────────────── */
+
+:root {
+  --book-serif: 'Bodoni Moda', 'Cormorant Garamond', 'Didot', 'Bodoni MT', 'Baskerville', serif;
+  --linen-base: #bf8183; /* Dusty rose / terracotta linen cloth */
+  --linen-dark: #a26567;
+  --paper-cream: #faf8f5;
+}
 
 .fbook-root {
   position: fixed;
@@ -345,19 +353,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 32px 14px;
+  padding: 18px 36px 14px;
   background: #ffffff;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  z-index: 50;
+  z-index: 60;
+  flex-shrink: 0;
 }
 .fbook-back {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   background: none;
-  border: 1px solid rgba(0, 0, 0, 0.14);
-  color: #444;
-  padding: 6px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  color: #333;
+  padding: 6px 15px;
   font-size: 10.5px;
   letter-spacing: 0.1em;
   border-radius: 999px;
@@ -367,17 +376,17 @@
 .fbook-back:hover {
   color: #000;
   border-color: #000;
-  background: rgba(0, 0, 0, 0.03);
+  background: rgba(0, 0, 0, 0.04);
 }
 .fbook-header-title {
   font-size: 11px;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
   font-weight: 500;
-  color: #777;
+  color: #666;
   text-transform: uppercase;
 }
 .fbook-header-r {
-  width: 72px; /* balances the back button width for true center */
+  width: 76px;
 }
 
 /* Stage */
@@ -387,33 +396,63 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 24px 32px 36px;
-  perspective: 2600px;
+  padding: 20px 32px 30px;
+  perspective: 2800px;
   overflow: hidden;
 }
 
-/* Scene transitions */
-.fbook-scene {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.fbook-entering {
-  opacity: 1;
-  transform: scale(1);
-}
-.fbook-leaving {
-  opacity: 0;
-  transform: scale(0.96);
-  pointer-events: none;
+/* ─── LINEN FABRIC TEXTURE ────────────────────────────────────────────────── */
+.fbook-linen-texture {
+  background-color: var(--linen-base);
+  background-image:
+    /* Fine warp yarn threads (vertical) */
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.1) 0px,
+      rgba(255, 255, 255, 0.1) 1px,
+      transparent 1px,
+      transparent 3px,
+      rgba(0, 0, 0, 0.11) 3px,
+      rgba(0, 0, 0, 0.11) 4px
+    ),
+    /* Fine weft yarn threads (horizontal) */
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.09) 0px,
+      rgba(255, 255, 255, 0.09) 1px,
+      transparent 1px,
+      transparent 3px,
+      rgba(0, 0, 0, 0.13) 3px,
+      rgba(0, 0, 0, 0.13) 4px
+    ),
+    /* Diagonal cross weave */
+    repeating-linear-gradient(
+      45deg,
+      rgba(0, 0, 0, 0.035) 0px,
+      rgba(0, 0, 0, 0.035) 1.5px,
+      transparent 1.5px,
+      transparent 4.5px
+    ),
+    /* Natural fabric ambient light */
+    radial-gradient(ellipse at 35% 25%, rgba(255, 255, 255, 0.17) 0%, transparent 68%),
+    linear-gradient(145deg, rgba(0, 0, 0, 0.04) 0%, transparent 55%, rgba(0, 0, 0, 0.18) 100%);
+  position: relative;
 }
 
-/* ─── 3D CLOSED BOOK (Francesca Woodman reference style) ─────────────────── */
-.fbook-closed-wrap {
+/* Organic linen fiber noise overlay */
+.fbook-linen-texture::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.32;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* ─── 3D CLOSED BOOK VIEW ─────────────────────────────────────────────────── */
+.fbook-closed-stage {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -423,11 +462,11 @@
 
 .fbook-book3d {
   position: relative;
-  width: 390px;
-  height: 520px;
+  width: 400px;
+  height: 530px;
   max-width: 82vw;
   max-height: 68vh;
-  aspect-ratio: 1 / 1.33;
+  aspect-ratio: 1 / 1.325;
   cursor: pointer;
   transform-style: preserve-3d;
   transform: rotateY(-8deg) rotateX(4deg);
@@ -442,26 +481,25 @@
 .fbook-book3d:hover {
   transform: rotateY(-3deg) rotateX(2deg) translateY(-8px);
   box-shadow:
-    -25px 36px 68px rgba(0, 0, 0, 0.2),
+    -26px 38px 70px rgba(0, 0, 0, 0.2),
     -8px 14px 26px rgba(0, 0, 0, 0.1),
     0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
-/* Spine — left narrow edge */
+/* Spine — narrow left edge */
 .fbook-3d-spine {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   width: 24px;
-  background: linear-gradient(to right, #9e6466, #b87b7d 60%, #a46b6d);
+  background: linear-gradient(to right, #96595b, #b87b7d 60%, #9c6062);
   transform-origin: left center;
   transform: rotateY(-90deg) translateX(-12px);
   border-radius: 3px 0 0 3px;
-  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.35);
 }
 
-/* Spine on back cover view */
 .fbook-3d-spine-back {
   left: auto;
   right: 0;
@@ -470,7 +508,7 @@
   border-radius: 0 3px 3px 0;
 }
 
-/* Pages stack edge (right) */
+/* Stacked page edges on right */
 .fbook-3d-pages {
   position: absolute;
   top: 4px;
@@ -481,14 +519,13 @@
     to bottom,
     #faf8f5 0px,
     #faf8f5 2px,
-    #e7e3dc 2px,
-    #e7e3dc 3px
+    #e5e0d7 2px,
+    #e5e0d7 3px
   );
   box-shadow: inset 2px 0 4px rgba(0, 0, 0, 0.18), 2px 2px 6px rgba(0, 0, 0, 0.08);
   border-radius: 0 2px 2px 0;
 }
 
-/* Pages stack on back cover view */
 .fbook-3d-pages-back {
   right: auto;
   left: -14px;
@@ -496,7 +533,7 @@
   border-radius: 2px 0 0 2px;
 }
 
-/* Bottom edge page stack */
+/* Bottom edge paper stack */
 .fbook-3d-bottom {
   position: absolute;
   left: 4px;
@@ -507,52 +544,23 @@
     to right,
     #faf8f5 0px,
     #faf8f5 2px,
-    #e7e3dc 2px,
-    #e7e3dc 3px
+    #e5e0d7 2px,
+    #e5e0d7 3px
   );
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
   border-radius: 0 0 3px 3px;
 }
 
-/* Main Cover Face */
+/* Face container */
 .fbook-3d-face {
   position: relative;
   width: 100%;
   height: 100%;
-  background-color: #be8486; /* Dusty rose / terracotta linen cloth */
-  background-image:
-    radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.18), transparent 60%),
-    linear-gradient(135deg, rgba(0, 0, 0, 0.08) 0%, transparent 50%, rgba(0, 0, 0, 0.16) 100%);
   border-radius: 3px 6px 6px 3px;
-  border: 1px solid rgba(0, 0, 0, 0.14);
   overflow: hidden;
-  box-sizing: border-box;
 }
 
-/* Hardcover cloth texture overlay */
-.fbook-3d-face::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: 0.18;
-  background-image: repeating-linear-gradient(
-    45deg,
-    rgba(0, 0, 0, 0.06) 0px,
-    rgba(0, 0, 0, 0.06) 1px,
-    transparent 1px,
-    transparent 3px
-  ),
-  repeating-linear-gradient(
-    -45deg,
-    rgba(255, 255, 255, 0.08) 0px,
-    rgba(255, 255, 255, 0.08) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  pointer-events: none;
-}
-
-/* Front Cover Layout */
+/* ─── FRONT COVER (Francesca Woodman Style) ───────────────────────────────── */
 .fbook-cover-front {
   position: relative;
   width: 100%;
@@ -560,61 +568,72 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  padding: 38px 30px 34px;
+  justify-content: flex-start;
+  padding: 44px 28px 36px;
   box-sizing: border-box;
-  z-index: 2;
+  border-radius: 3px 6px 6px 3px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
 }
 
-/* Hardcover hinge indent groove */
+/* Spine hinge indentation (joint) */
 .fbook-cover-hinge {
   position: absolute;
-  left: 20px;
+  left: 22px;
   top: 0;
   bottom: 0;
   width: 3px;
   background: linear-gradient(
     to right,
-    rgba(0, 0, 0, 0.28) 0%,
-    rgba(0, 0, 0, 0.08) 45%,
-    rgba(255, 255, 255, 0.3) 100%
+    rgba(0, 0, 0, 0.32) 0%,
+    rgba(0, 0, 0, 0.1) 45%,
+    rgba(255, 255, 255, 0.28) 100%
   );
-  box-shadow: inset 1px 0 1px rgba(0, 0, 0, 0.35);
+  box-shadow: inset 1px 0 1px rgba(0, 0, 0, 0.38);
   pointer-events: none;
 }
 
 .fbook-cover-hinge-back {
   left: auto;
-  right: 20px;
+  right: 22px;
   background: linear-gradient(
     to left,
-    rgba(0, 0, 0, 0.28) 0%,
-    rgba(0, 0, 0, 0.08) 45%,
-    rgba(255, 255, 255, 0.3) 100%
+    rgba(0, 0, 0, 0.32) 0%,
+    rgba(0, 0, 0, 0.1) 45%,
+    rgba(255, 255, 255, 0.28) 100%
   );
 }
 
-/* Cover Typography — Author at top */
+/* Cover Author Typography — Exact 2 lines Roman serif */
 .fbook-cover-author {
-  font-size: 15px;
-  letter-spacing: 0.26em;
+  font-family: var(--book-serif);
+  font-size: 26px;
   font-weight: 500;
-  color: #1a1717;
+  letter-spacing: 0.14em;
+  line-height: 1.15;
+  color: #1a1515;
   text-align: center;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.35), 0 -1px 0 rgba(0, 0, 0, 0.2);
-  line-height: 1.3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.32), 0 -1px 0 rgba(0, 0, 0, 0.22);
+  margin-bottom: 34px;
+}
+.fbook-cover-line {
+  display: block;
 }
 
-/* Center Debossed Photographic Plate Frame */
+/* Inset debossed photographic plate frame */
 .fbook-cover-plate {
-  width: 58%;
-  aspect-ratio: 0.82 / 1;
-  background: #2b2525;
-  padding: 4px;
+  position: relative;
+  width: 62%;
+  max-width: 250px;
+  aspect-ratio: 1 / 1.02;
+  background: #201a1a;
+  padding: 6px;
   box-shadow:
-    inset 2px 2px 5px rgba(0, 0, 0, 0.45),
-    inset -1px -1px 2px rgba(255, 255, 255, 0.28),
-    0 1px 2px rgba(0, 0, 0, 0.15);
+    inset 3px 3px 6px rgba(0, 0, 0, 0.45),
+    inset -2px -2px 3px rgba(255, 255, 255, 0.3),
+    0 1px 3px rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(0, 0, 0, 0.25);
   border-radius: 1px;
   display: flex;
@@ -629,72 +648,30 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Cover Typography — Subtitle at bottom */
-.fbook-cover-footer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-.fbook-cover-sub {
-  font-size: 13px;
-  letter-spacing: 0.22em;
-  font-weight: 500;
-  color: #1a1717;
-  text-align: center;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.35), 0 -1px 0 rgba(0, 0, 0, 0.2);
-}
-.fbook-cover-year {
-  font-size: 9.5px;
-  letter-spacing: 0.14em;
-  color: rgba(26, 23, 23, 0.65);
-}
-
-/* Back Cover Layout */
+/* Back cover */
 .fbook-cover-back {
   position: relative;
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 38px 30px;
+  padding: 40px;
   box-sizing: border-box;
-  z-index: 2;
-}
-.fbook-back-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-.fbook-back-author {
-  font-size: 12px;
-  letter-spacing: 0.22em;
-  color: #1a1717;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
-}
-.fbook-back-rule {
-  width: 24px;
-  height: 1px;
-  background: rgba(26, 23, 23, 0.3);
-}
-.fbook-back-sub {
-  font-size: 9px;
-  letter-spacing: 0.16em;
-  color: rgba(26, 23, 23, 0.7);
+  border-radius: 6px 3px 3px 6px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
 }
 
-/* "Click to open" hint */
+/* Click hint */
 .fbook-hint {
   font-size: 10px;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   color: #777;
   background: rgba(0, 0, 0, 0.04);
-  padding: 8px 20px;
+  padding: 8px 22px;
   border-radius: 999px;
   border: 1px solid rgba(0, 0, 0, 0.08);
   transition: all 0.25s ease;
@@ -702,9 +679,182 @@
 }
 .fbook-book3d:hover + .fbook-hint {
   color: #111;
-  background: rgba(0, 0, 0, 0.07);
-  border-color: rgba(0, 0, 0, 0.18);
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.2);
   transform: translateY(-2px);
+}
+
+/* ─── 3D BOOK OPENING ANIMATION ───────────────────────────────────────────── */
+.fbook-opening-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  perspective: 2800px;
+}
+
+.fbook-spread-opening {
+  animation: fbook-opening-center 0.85s cubic-bezier(0.35, 0, 0.2, 1) forwards;
+}
+
+@keyframes fbook-opening-center {
+  0% {
+    transform: translateX(-25%) rotateY(-8deg) rotateX(4deg);
+  }
+  100% {
+    transform: translateX(0) rotateY(0deg) rotateX(0deg);
+  }
+}
+
+.fbook-spread-closing-front {
+  animation: fbook-closing-front-center 0.85s cubic-bezier(0.35, 0, 0.2, 1) forwards;
+}
+
+@keyframes fbook-closing-front-center {
+  0% {
+    transform: translateX(0) rotateY(0deg) rotateX(0deg);
+  }
+  100% {
+    transform: translateX(-25%) rotateY(-8deg) rotateX(4deg);
+  }
+}
+
+.fbook-spread-closing-back {
+  animation: fbook-closing-back-center 0.85s cubic-bezier(0.35, 0, 0.2, 1) forwards;
+}
+
+@keyframes fbook-closing-back-center {
+  0% {
+    transform: translateX(0) rotateY(0deg) rotateX(0deg);
+  }
+  100% {
+    transform: translateX(25%) rotateY(8deg) rotateX(4deg);
+  }
+}
+
+/* Flipper leaf for opening/closing */
+.fbook-leaf-flipper {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  transform-style: preserve-3d;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.fbook-leaf-flipper-opening {
+  right: 0;
+  width: 50%;
+  transform-origin: left center;
+  animation: fbook-leaf-open-3d 0.85s cubic-bezier(0.35, 0, 0.2, 1) forwards;
+}
+
+@keyframes fbook-leaf-open-3d {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(-180deg);
+  }
+}
+
+.fbook-leaf-flipper-closing-front {
+  right: 0;
+  width: 50%;
+  transform-origin: left center;
+  animation: fbook-leaf-close-front-3d 0.85s cubic-bezier(0.35, 0, 0.2, 1) forwards;
+}
+
+@keyframes fbook-leaf-close-front-3d {
+  0% {
+    transform: rotateY(-180deg);
+  }
+  100% {
+    transform: rotateY(0deg);
+  }
+}
+
+.fbook-leaf-flipper-closing-back {
+  right: 0;
+  width: 50%;
+  transform-origin: left center;
+  animation: fbook-leaf-close-back-3d 0.85s cubic-bezier(0.35, 0, 0.2, 1) forwards;
+}
+
+@keyframes fbook-leaf-close-back-3d {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(-180deg);
+  }
+}
+
+.fbook-leaf-front,
+.fbook-leaf-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.fbook-leaf-flipper-opening .fbook-leaf-back {
+  transform: rotateY(180deg);
+  background: var(--paper-cream);
+  border-radius: 3px 0 0 3px;
+  box-shadow: inset -22px 0 30px -10px rgba(0, 0, 0, 0.13);
+}
+
+.fbook-leaf-flipper-closing-front .fbook-leaf-back {
+  transform: rotateY(180deg);
+  background: var(--paper-cream);
+}
+
+.fbook-leaf-flipper-closing-back .fbook-leaf-back {
+  transform: rotateY(180deg);
+  border-radius: 6px 3px 3px 6px;
+}
+
+/* ─── OPEN BOOK SPREAD WRAPPER WITH OUTSIDE ARROWS ────────────────────────── */
+.fbook-stage-open-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  position: relative;
+  max-width: 100%;
+}
+
+/* Outside navigation buttons */
+.fbook-arrow-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.13);
+  color: #111111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  flex-shrink: 0;
+  z-index: 40;
+}
+.fbook-arrow-btn:hover {
+  transform: scale(1.08);
+  border-color: #000000;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.13);
+}
+.fbook-arrow-prev:hover {
+  transform: scale(1.08) translateX(-3px);
+}
+.fbook-arrow-next:hover {
+  transform: scale(1.08) translateX(3px);
 }
 
 /* ─── OPEN BOOK SPREAD ────────────────────────────────────────────────────── */
@@ -712,46 +862,53 @@
   position: relative;
   width: 960px;
   height: 590px;
-  max-width: 94vw;
+  max-width: 86vw;
   max-height: 78vh;
   aspect-ratio: 1.62 / 1;
   display: flex;
+  border-radius: 4px;
+  background: var(--paper-cream);
+  transform-style: preserve-3d;
   box-shadow:
     0 28px 75px rgba(0, 0, 0, 0.15),
     0 10px 25px rgba(0, 0, 0, 0.07),
     0 2px 6px rgba(0, 0, 0, 0.04);
-  border-radius: 4px;
-  background: #faf8f5;
-  transform-style: preserve-3d;
 }
 
-/* Stacked pages edge effect underneath the spread */
+/* Linen cloth casing border extending around the open paper block */
 .fbook-spread::before {
   content: "";
   position: absolute;
-  inset: -3px;
-  background: #be8486;
+  inset: -5px;
+  background-color: var(--linen-base);
+  background-image:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0px, rgba(255, 255, 255, 0.1) 1px, transparent 1px, transparent 3px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.09) 0px, rgba(255, 255, 255, 0.09) 1px, transparent 1px, transparent 3px);
   border-radius: 6px;
   z-index: -2;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
 }
+
+/* Paper block depth line */
 .fbook-spread::after {
   content: "";
   position: absolute;
-  inset: -1px;
-  background: #eae6de;
+  inset: -2px;
+  background: #ece7de;
   border-radius: 4px;
   z-index: -1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* Pages */
+/* Inside Pages */
 .fbook-page {
   position: relative;
   width: 50%;
   height: 100%;
-  background: #faf8f5;
+  background: var(--paper-cream);
   overflow: hidden;
   box-sizing: border-box;
+  cursor: pointer;
 }
 
 .fbook-page-l {
@@ -785,44 +942,29 @@
   box-shadow:
     -1px 0 3px rgba(0, 0, 0, 0.15),
     1px 0 3px rgba(0, 0, 0, 0.15);
-  z-index: 8;
+  z-index: 10;
   pointer-events: none;
 }
 
-/* Title Page (Inside Left) */
+/* Inside Title Page ("Portfolio") */
 .fbook-title-page {
   position: absolute;
   inset: 0;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 40px;
   box-sizing: border-box;
   text-align: center;
+  background: var(--paper-cream);
 }
-.fbook-title-name {
-  font-size: 16px;
-  letter-spacing: 0.28em;
-  font-weight: 500;
-  color: #111;
-}
-.fbook-title-rule {
-  width: 32px;
-  height: 1px;
-  background: rgba(0, 0, 0, 0.2);
-  margin: 22px 0;
-}
-.fbook-title-sub {
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  color: #666;
-}
-.fbook-title-year {
-  font-size: 9.5px;
-  letter-spacing: 0.12em;
-  color: #999;
-  margin-top: 12px;
+.fbook-title-word {
+  font-family: var(--book-serif);
+  font-size: 34px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: #1a1818;
+  margin: 0;
 }
 
 /* Photo page container */
@@ -832,7 +974,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 32px 36px;
+  padding: 34px 38px;
   box-sizing: border-box;
 }
 
@@ -840,17 +982,17 @@
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
   background: #ffffff;
 }
 
 .fbook-page-blank {
   position: absolute;
   inset: 0;
-  background: #faf8f5;
+  background: var(--paper-cream);
 }
 
-/* Page Numbers */
+/* Folio page numbers */
 .fbook-pn {
   position: absolute;
   bottom: 16px;
@@ -866,7 +1008,7 @@
   right: 24px;
 }
 
-/* ─── 3D PAGE FLIPPER ANIMATION ───────────────────────────────────────────── */
+/* ─── 3D PAGE FLIP ANIMATIONS ─────────────────────────────────────────────── */
 .fbook-flipper {
   position: absolute;
   top: 0;
@@ -881,16 +1023,16 @@
 .fbook-flipper-r {
   right: 0;
   transform-origin: left center;
-  animation: fbook-turn-next 0.72s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: fbook-turn-next-anim 0.72s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .fbook-flipper-l {
   left: 0;
   transform-origin: right center;
-  animation: fbook-turn-prev 0.72s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: fbook-turn-prev-anim 0.72s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-@keyframes fbook-turn-next {
+@keyframes fbook-turn-next-anim {
   0% {
     transform: rotateY(0deg);
   }
@@ -899,7 +1041,7 @@
   }
 }
 
-@keyframes fbook-turn-prev {
+@keyframes fbook-turn-prev-anim {
   0% {
     transform: rotateY(0deg);
   }
@@ -914,7 +1056,7 @@
   inset: 0;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  background: #faf8f5;
+  background: var(--paper-cream);
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -941,56 +1083,30 @@
   box-shadow: inset 22px 0 30px -10px rgba(0, 0, 0, 0.13);
 }
 
-/* Navigation Click Zones & Arrows */
-.fbook-nav {
+/* Page turn shadow effect simulating paper curvature */
+.fbook-flip-shade {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 50%;
-  display: flex;
-  align-items: center;
-  z-index: 15;
-  cursor: pointer;
+  inset: 0;
+  pointer-events: none;
   opacity: 0;
-  transition: opacity 0.25s ease;
 }
-.fbook-spread:hover .fbook-nav {
-  opacity: 1;
+.fbook-flipper-r .fbook-flip-shade-front {
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.18) 0%, transparent 40%);
+  animation: fbook-shade-r-front 0.72s ease-in-out forwards;
 }
-
-.fbook-nav-l {
-  left: 0;
-  justify-content: flex-start;
-  padding-left: 20px;
-}
-.fbook-nav-r {
-  right: 0;
-  justify-content: flex-end;
-  padding-right: 20px;
+.fbook-flipper-r .fbook-flip-shade-back {
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.18) 0%, transparent 40%);
+  animation: fbook-shade-r-back 0.72s ease-in-out forwards;
 }
 
-.fbook-nav-arrow {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.14);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  font-weight: 300;
-  color: #111;
-  line-height: 1;
-  transition: transform 0.2s, background 0.2s, color 0.2s;
+@keyframes fbook-shade-r-front {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
 }
-.fbook-nav-l:hover .fbook-nav-arrow {
-  transform: scale(1.1) translateX(-2px);
-  background: #ffffff;
-}
-.fbook-nav-r:hover .fbook-nav-arrow {
-  transform: scale(1.1) translateX(2px);
-  background: #ffffff;
+@keyframes fbook-shade-r-back {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 /* Spread Counter */
@@ -1005,41 +1121,38 @@
   white-space: nowrap;
 }
 
-/* ─── Mobile responsiveness ──────────────────────────────────────────────── */
+/* ─── MOBILE RESPONSIVENESS ──────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .fbook-header {
     padding: 14px 18px 12px;
   }
   .fbook-stage {
-    padding: 16px 12px 32px;
+    padding: 16px 12px 28px;
   }
   .fbook-book3d {
     width: 310px;
     height: 420px;
   }
+  .fbook-cover-author {
+    font-size: 20px;
+    margin-bottom: 22px;
+  }
+  .fbook-stage-open-wrap {
+    gap: 12px;
+  }
+  .fbook-arrow-btn {
+    width: 36px;
+    height: 36px;
+  }
   .fbook-spread {
-    width: 96vw;
+    width: 88vw;
     height: 60vh;
     aspect-ratio: auto;
   }
   .fbook-page-photo {
     padding: 16px 12px;
   }
-  .fbook-nav {
-    opacity: 0.85;
-  }
-  .fbook-nav-arrow {
-    width: 30px;
-    height: 30px;
-    font-size: 18px;
-  }
-  .fbook-title-page {
-    padding: 16px;
-  }
-  .fbook-title-name {
-    font-size: 12px;
-  }
-  .fbook-title-rule {
-    margin: 12px 0;
+  .fbook-title-word {
+    font-size: 24px;
   }
 }
