@@ -1,4 +1,4 @@
-// flipbook.jsx — Red cloth art book on concrete (secret page: yoursite.com/#portfolio)
+// flipbook.jsx — Red cloth art book (secret page: yoursite.com/#portfolio)
 //
 // Physical model: the book is a stack of LEAVES (sheets). Leaf 0 is the front
 // cover board, the last leaf is the back cover board, everything between is a
@@ -22,13 +22,13 @@ const BOOK = {
     '01.jpg', '02.jpg', '03.jpg', '04.jpg', '05.jpg', '06.jpg', '07.jpg',
     '08.jpg', '09.jpg', '10.jpg', '11.jpg', '12.jpg', '13.jpg', '14.jpg',
     '15.jpg', '16.jpg', '16-2.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg',
-    '21.jpg', '22.jpg', '23.jpg', '25.jpg', '26.jpg', '27.jpg', '28.jpg',
-    '29.jpg', '30.jpg', '31.jpg', '32.jpg', '33.jpg', '34.jpg', '35.jpg',
-    '37.jpg', 'POST_CASA_SUM23.jpg', 'DSC_5331b.jpg',
+    '20-1.jpg', '21.jpg', '22.jpg', '23.jpg', '25.jpg', '26.jpg', '27.jpg',
+    '28.jpg', '29.jpg', '30.jpg', '31.jpg', '32.jpg', '33.jpg', '34.jpg',
+    '35.jpg', '36.jpg', '37.jpg',
   ].map((f) => 'flipbook/web/' + f),
 };
 
-const PAGE_RATIO   = 0.74;  // page width / height
+const PAGE_RATIO   = 0.78;  // page width / height
 const STRIPS       = 10;    // bend resolution of a paper leaf
 const PAPER_BEND   = 64;    // max degrees of curl across a paper leaf
 const TURN_MS      = 1050;  // auto page turn
@@ -51,9 +51,9 @@ const easeOut   = (t) => 1 - Math.pow(1 - t, 3);
 function useBookSize() {
   const calc = () => {
     const vw = window.innerWidth, vh = window.innerHeight;
-    const side = vw > 900 ? 120 : 40;
-    // leave generous concrete around the book, like the reference photo
-    const maxH = vw > 900 ? Math.min(vh * 0.74, vh - 170) : vh - 120;
+    const side = vw > 900 ? 96 : 36;
+    // big book, with just enough white around it for the header and hint
+    const maxH = vw > 900 ? Math.min(vh * 0.86, vh - 112) : vh - 110;
     const maxWfromW = (vw - side * 2) / 2;
     let H = Math.min(maxH, maxWfromW / PAGE_RATIO);
     H = Math.max(180, Math.floor(H));
@@ -204,7 +204,7 @@ function stackShadow(count, side) {
   const dir = side === 'right' ? 1 : -1;
   const s = [];
   for (let i = 1; i <= layers; i++) {
-    const c = i % 2 ? '#e7e3da' : '#d6d1c6';
+    const c = i % 2 ? '#efefed' : '#dededb';
     s.push(`${dir * i * 0.7}px ${i * 0.55}px 0 ${c}`);
   }
   s.push(`${dir * (layers * 0.7 + 0.5)}px ${layers * 0.55 + 0.5}px 1px rgba(0,0,0,.25)`);
@@ -498,8 +498,7 @@ function Flipbook({ goBack }) {
 
   return (
     <div className="fb-root" style={sizeVars}>
-      <div className="fb-concrete" />
-
+      
       <header className="fb-header">
         <button className="fb-head-btn" onClick={goBack}>← Back</button>
         <span className="fb-head-title">Federica Giglio</span>

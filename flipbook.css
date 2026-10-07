@@ -1,9 +1,9 @@
-/* flipbook.css — Red cloth art book on concrete (#portfolio) */
+/* flipbook.css — Red cloth art book on white (#portfolio) */
 
 .fb-root {
   --ink: #121212;
   --cloth: #d43a4b;
-  --paper: #f5f2eb;
+  --paper: #ffffff;
   --fb-font: 'Inter Tight', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   position: fixed;
   inset: 0;
@@ -13,19 +13,7 @@
   font-family: var(--fb-font);
   user-select: none;
   -webkit-user-select: none;
-  background: #a9a9a5;
-}
-
-/* ─── Concrete floor ─────────────────────────────────────────────────────── */
-.fb-concrete {
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(120% 90% at 30% 20%, rgba(255,255,255,.10), transparent 60%),
-    radial-gradient(140% 120% at 50% 50%, transparent 55%, rgba(0,0,0,.14) 100%),
-    url('flipbook/concrete.jpg');
-  background-size: cover, cover, cover;
-  background-position: center;
+  background: #ffffff;
 }
 
 /* ─── Header type (small bold grotesk caps, like the cover) ──────────────── */
@@ -36,7 +24,7 @@
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  padding: 22px 30px;
+  padding: 18px 28px;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: .02em;
@@ -99,10 +87,10 @@
   width: calc(var(--W) + var(--o));
   height: calc(var(--H) + 2 * var(--o));
   box-shadow:
-    0 0 0 .5px rgba(60,10,14,.35),
-    1px 2px 2px rgba(0,0,0,.22),
-    4px 10px 18px rgba(0,0,0,.16),
-    14px 30px 50px -12px rgba(0,0,0,.28);
+    0 0 0 .5px rgba(60,10,14,.30),
+    1px 2px 3px rgba(0,0,0,.14),
+    4px 12px 22px rgba(0,0,0,.09),
+    14px 34px 60px -14px rgba(0,0,0,.18);
 }
 .fb-board-l { right: 50%; border-radius: 2px 0 0 2px; }
 .fb-board-r { left: 50%;  border-radius: 0 2px 2px 0; }
@@ -113,9 +101,9 @@
     1px 1px 0 #a42532,
     2px 2px 0 #8f1e2a,
     3px 3px 0 rgba(70,10,16,.55),
-    3px 4px 3px rgba(0,0,0,.30),
-    8px 16px 26px rgba(0,0,0,.20),
-    22px 44px 70px -14px rgba(0,0,0,.32);
+    3px 4px 4px rgba(0,0,0,.18),
+    8px 18px 30px rgba(0,0,0,.11),
+    22px 46px 80px -16px rgba(0,0,0,.20);
 }
 
 /* Page block on top of a board */
@@ -246,7 +234,7 @@
   position: absolute;
   top: var(--o);
   bottom: var(--o);
-  background-color: #ece7dd;
+  background-color: #f5f4f1;
   background-image:
     linear-gradient(90deg, rgba(0,0,0,.05), transparent 30%),
     url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .3  0 0 0 0 .27  0 0 0 0 .22  0 0 0 .12 0'/></filter><rect width='100%' height='100%' filter='url(%23p)'/></svg>");
@@ -268,7 +256,7 @@
   overflow: hidden;
   background-color: var(--paper);
   background-image:
-    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .32  0 0 0 0 .29  0 0 0 0 .24  0 0 0 .10 0'/></filter><rect width='100%' height='100%' filter='url(%23p)'/></svg>");
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .3  0 0 0 0 .3  0 0 0 0 .3  0 0 0 .05 0'/></filter><rect width='100%' height='100%' filter='url(%23p)'/></svg>");
 }
 .fb-gutter {
   position: absolute;
@@ -278,31 +266,29 @@
 /* the page curves down into the spine; outer edge catches a little light */
 .fb-paper-recto .fb-gutter {
   background: linear-gradient(90deg,
-    rgba(0,0,0,.26) 0%, rgba(0,0,0,.10) 2.5%, rgba(0,0,0,.03) 7%, rgba(255,255,255,.10) 12%,
+    rgba(0,0,0,.20) 0%, rgba(0,0,0,.08) 2.5%, rgba(0,0,0,.025) 7%, rgba(255,255,255,0) 12%,
     rgba(255,255,255,0) 22%, rgba(0,0,0,0) 90%, rgba(0,0,0,.035) 100%);
 }
 .fb-paper-verso .fb-gutter {
   background: linear-gradient(270deg,
-    rgba(0,0,0,.26) 0%, rgba(0,0,0,.10) 2.5%, rgba(0,0,0,.03) 7%, rgba(255,255,255,.10) 12%,
+    rgba(0,0,0,.20) 0%, rgba(0,0,0,.08) 2.5%, rgba(0,0,0,.025) 7%, rgba(255,255,255,0) 12%,
     rgba(255,255,255,0) 22%, rgba(0,0,0,0) 90%, rgba(0,0,0,.035) 100%);
 }
 
 .fb-photo-box {
   position: absolute;
-  top: 11%;
-  bottom: 13%;
+  top: 8.5%;
+  bottom: 10.5%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.fb-paper-recto .fb-photo-box { left: 13%; right: 11%; }
-.fb-paper-verso .fb-photo-box { left: 11%; right: 13%; }
+.fb-paper-recto .fb-photo-box { left: 8%; right: 7%; }
+.fb-paper-verso .fb-photo-box { left: 7%; right: 8%; }
 .fb-photo-box img {
   display: block;
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   mix-blend-mode: multiply; /* ink sits in the paper */
   pointer-events: none;
@@ -310,15 +296,15 @@
 
 .fb-folio {
   position: absolute;
-  bottom: 5.4%;
+  bottom: 4.2%;
   font-size: max(7px, calc(var(--H) * .012));
   font-weight: 600;
   letter-spacing: .02em;
   font-variant-numeric: tabular-nums;
   color: rgba(18,18,18,.7);
 }
-.fb-paper-recto .fb-folio { right: 11%; }
-.fb-paper-verso .fb-folio { left: 11%; }
+.fb-paper-recto .fb-folio { right: 7%; }
+.fb-paper-verso .fb-folio { left: 7%; }
 
 .fb-title {
   position: absolute;
@@ -396,7 +382,7 @@
 .fb-hint {
   position: absolute;
   left: 0; right: 0;
-  bottom: 22px;
+  bottom: 16px;
   margin: 0;
   text-align: center;
   font-size: 10px;
