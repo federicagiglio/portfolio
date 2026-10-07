@@ -17,15 +17,15 @@ const { useState: fbState, useEffect: fbEffect, useRef: fbRef,
 const BOOK = {
   coverTop:    'FEDERICA',
   coverBottom: 'GIGLIO',
-  cover: 'flipbook/web/cover.jpg',
+  cover: 'flipbook/web/cover.jpg?v=3',
   photos: [
     '01.jpg', '02.jpg', '03.jpg', '04.jpg', '05.jpg', '06.jpg', '07.jpg',
     '08.jpg', '09.jpg', '10.jpg', '11.jpg', '12.jpg', '13.jpg', '14.jpg',
-    '15.jpg', '16.jpg', '16-2.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg',
-    '20-1.jpg', '21.jpg', '22.jpg', '23.jpg', '25.jpg', '26.jpg', '27.jpg',
+    '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg', '20b.jpg',
+    '21.jpg', '22.jpg', '23.jpg', '24.jpg', '25.jpg', '26.jpg', '27.jpg',
     '28.jpg', '29.jpg', '30.jpg', '31.jpg', '32.jpg', '33.jpg', '34.jpg',
     '35.jpg', '36.jpg', '37.jpg',
-  ].map((f) => 'flipbook/web/' + f),
+  ].map((f) => 'flipbook/web/' + f + '?v=3'),
 };
 
 const PAGE_RATIO   = 0.78;  // page width / height
@@ -500,7 +500,7 @@ function Flipbook({ goBack }) {
     <div className="fb-root" style={sizeVars}>
       
       <header className="fb-header">
-        <button className="fb-head-btn" onClick={goBack}>← Back</button>
+        <button className="fb-head-btn" onClick={goBack} title="Leave the book and return to the website">Exit to website</button>
         <span className="fb-head-title">Federica Giglio</span>
         <span className="fb-head-count">{label}</span>
       </header>
