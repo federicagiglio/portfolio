@@ -36,7 +36,7 @@ jobs:
       - name: Drop large client media from the Pages build
         # Contact-sheet photos are loaded from raw.githubusercontent.com instead,
         # keeping the Pages artifact well under its size limit.
-        run: rm -rf vintage-voice-n9y9kpkt/img vintage-voice-n9y9kpkt/thumb
+        run: rm -rf vintage-voice-gallery/img vintage-voice-gallery/thumb
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
