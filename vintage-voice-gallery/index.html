@@ -13,7 +13,7 @@
     --accent:#E62317;
     --ink:#0a0a0a;
     --paper:#ffffff;
-    --grey:#888;
+    --grey:#6b6b6b;
     --rule:rgba(10,10,10,.12);
     --rule-soft:rgba(10,10,10,.06);
     --row:210px;
@@ -26,6 +26,9 @@
   a{color:inherit;text-decoration:none}
   button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;letter-spacing:inherit;text-transform:inherit}
   ::selection{background:var(--accent);color:#fff}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  .sel:focus-visible{opacity:1}
+  @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
   ::-webkit-scrollbar{height:8px;width:8px}
   ::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:99px}
   .lab{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase}
@@ -130,7 +133,7 @@
   .bot button:hover{color:#000}
 
   /* ─── Lightbox: portfolio black lightbox + notes column ─── */
-  .lb{position:fixed;inset:0;z-index:200;background:#000;color:#fff;display:none;grid-template-columns:1fr 330px}
+  .lb{--grey:#9a9a9a;position:fixed;inset:0;z-index:200;background:#000;color:#fff;display:none;grid-template-columns:1fr 330px}
   .lb.open{display:grid}
   .stage{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
     padding:24px 32px;min-width:0;min-height:0;user-select:none;-webkit-user-select:none}
@@ -140,7 +143,7 @@
   .lbx{width:40px;height:40px;margin:-10px 0 -10px -10px;display:grid;place-items:center;font-size:22px;line-height:1;color:#fff;
     border:1px solid rgba(255,255,255,.35);transition:background .2s,color .2s,border-color .2s;z-index:3}
   .lbx:hover{background:var(--accent);border-color:var(--accent)}
-  .lb.loading .stage::after{content:"Loading full size…";position:absolute;bottom:18px;left:24px;color:#666;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase}
+  .lb.loading .stage::after{content:"Loading…";position:absolute;bottom:18px;left:24px;color:#8a8a8a;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase}
   .lframe{position:relative;touch-action:none;flex:none}
   .lframe img{display:block;width:100%;height:100%}
   .lframe canvas{position:absolute;inset:0;width:100%;height:100%}
@@ -166,14 +169,14 @@
   textarea{width:100%;min-height:130px;resize:vertical;border:1px solid rgba(255,255,255,.2);background:transparent;color:#fff;
     padding:10px;font:14px/1.5 var(--grotesk);outline:none}
   textarea:focus{border-color:#fff}
-  textarea::placeholder{color:#666}
+  textarea::placeholder{color:#8a8a8a}
   .trow{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
   .tool{border:1px solid rgba(255,255,255,.2);padding:7px 10px;color:#bbb;transition:color .2s,border-color .2s}
   .tool:hover{color:#fff;border-color:#fff}
   .tool.on{border-color:#fff;color:#000;background:#fff}
   .sw{width:22px;height:22px;border:1px solid rgba(255,255,255,.3)}
   .sw.on{outline:1px solid #fff;outline-offset:3px}
-  .lbkeys{margin-top:auto;color:#666;line-height:1.9}
+  .lbkeys{margin-top:auto;color:#8a8a8a;line-height:1.9}
   .lbkeys span{color:#bbb}
 
   /* ─── Send modal ─── */
@@ -283,7 +286,7 @@
 </footer>
 
 <!-- Lightbox -->
-<div class="lb" id="lb">
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
   <div class="stage" id="stage">
     <div class="lbtop lab"><span class="lbtl"><button class="lbx" id="lbX" aria-label="Close">✕</button><b id="lbNum"></b> <span class="sep">·</span> <span id="lbName"></span></span><span id="lbPos"></span></div>
     <div class="lframe" id="lframe"><img id="lbImg" alt=""><canvas id="cv"></canvas><video id="lbVid" controls playsinline preload="metadata"></video></div>
@@ -379,19 +382,21 @@
   const frames = [];
   let pc = 0, vc = 0;
   SHOOT.groups.forEach(g => g.frames.forEach(f => frames.push({ ...f, g, n: f.v ? 'V' + String(++vc).padStart(2, '0') : pad(++pc) })));
-  // Previews ship with the site. Full-size photos are left out of the Pages build (size limit)
-  // and load from the repo via raw.githubusercontent.com, one at a time as photos are opened.
+  // Three sizes: thumb/ 720px (grid) and mid/ 1600px (viewer) ship with the site;
+  // full/ 3000px is left out of the Pages build (size limit) and loads from the repo
+  // via raw.githubusercontent.com, only when the screen can show more than 1600px.
   const LOCAL = location.protocol === 'file:';
-  const RAW = 'https://raw.githubusercontent.com/federicagiglio/portfolio/main/vintage-voice-gallery/';
-  const FULL = LOCAL ? [''] : [RAW, RAW];   // second entry = one retry
+  const RAW = LOCAL ? '' : 'https://raw.githubusercontent.com/federicagiglio/portfolio/main/vintage-voice-gallery/';
   const thumbOf = (f) => f.v ? `clips/${f.name}.jpg` : `thumb/${f.id}.jpg`;
-  function loadFull(f, done, k = 0) {
+  function load(src, done, fail, tries = 2) {
     const im = new Image();
-    im.onload = () => done(im.src);
-    im.onerror = () => { if (k + 1 < FULL.length) loadFull(f, done, k + 1); };
-    im.src = FULL[k] + 'img/' + f.id + '.jpg';
+    im.onload = () => done(src);
+    im.onerror = () => tries > 1 ? setTimeout(() => load(src, done, fail, tries - 1), 600) : fail && fail();
+    im.src = src;
   }
+  const midOf = (f) => `mid/${f.id}.jpg`, fullOf = (f) => `${RAW}full/${f.id}.jpg`;
   const byId = Object.fromEntries(frames.map((f, i) => [f.id, i]));
+  const altOf = (f) => `${f.v ? 'Clip' : 'Frame'} ${f.n}, ${f.g.title}, ${SHOOT.client}`;
   $('#total').textContent = pc; $('#clips').textContent = vc;
   $('#looks').textContent = SHOOT.groups.filter(g => /^o\d/.test(g.id)).length;
 
@@ -408,12 +413,12 @@
       const f = frames[byId[f0.id]];
       const el = document.createElement('figure');
       el.className = 'fig'; el.dataset.id = f.id;
-      el.innerHTML = `<div class="frame" style="aspect-ratio:${f.w}/${f.h}">
-          <img loading="lazy" decoding="async" src="${thumbOf(f)}" alt="${f.n}" width="${f.w}" height="${f.h}">
-          <button class="sel" aria-label="Select ${f.n}"></button>${f.v ? `<span class="play">▶ ${f.dur}</span>` : ''}
+      el.innerHTML = `<div class="frame" style="aspect-ratio:${f.w}/${f.h}" tabindex="0" role="button" aria-label="Open ${altOf(f)}">
+          <img loading="lazy" decoding="async" ${frames.indexOf(f) < 9 ? 'fetchpriority="high"' : ''} src="${thumbOf(f)}" alt="${altOf(f)}" width="${f.w}" height="${f.h}">
+          <button class="sel" aria-pressed="false" aria-label="Select ${f.v ? 'clip' : 'frame'} ${f.n}"></button>${f.v ? `<span class="play">▶ ${f.dur}</span>` : ''}
           <svg viewBox="0 0 1000 ${Math.round(1000 * f.h / f.w)}" preserveAspectRatio="none"></svg></div>
         <figcaption class="cap lab"><span class="num">${f.n}</span><span class="nm">${f.name}</span><span class="fl"></span>
-          <button class="pk" aria-label="Select ${f.n}">●</button></figcaption>`;
+          <button class="pk" aria-hidden="true" tabindex="-1">●</button></figcaption>`;
       frag.appendChild(el); figEl[f.id] = el;
     });
     sheet.appendChild(frag); root.appendChild(sec);
@@ -423,6 +428,7 @@
   function paint(id) {
     const el = figEl[id]; const it = state.items[id] || {};
     el.classList.toggle('picked', !!it.p);
+    $('.sel', el).setAttribute('aria-pressed', it.p ? 'true' : 'false');
     $('.fl', el).textContent = [it.c ? 'Note' : '', it.s && it.s.length ? 'Drawn' : ''].filter(Boolean).join(' · ');
     const f = frames[byId[id]], H = 1000 * f.h / f.w;
     $('svg', el).innerHTML = (it.s || []).map(s =>
@@ -468,6 +474,13 @@
     const el = e.target.closest('.fig'); if (!el) return;
     if (e.target.closest('.pk,.sel')) togglePick(el.dataset.id);
     else if (e.target.closest('.frame')) openLb(byId[el.dataset.id]);
+  });
+  root.addEventListener('keydown', e => {
+    const fr = e.target.closest && e.target.classList.contains('frame') && e.target;
+    if (!fr) return;
+    const id = fr.closest('.fig').dataset.id;
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLb(byId[id]); }
+    else if (e.key.toLowerCase() === 'p') { e.preventDefault(); togglePick(id); }
   });
 
   // Retry a preview that failed to load (flaky connection), up to twice.
@@ -522,22 +535,31 @@
     if (f.v) { setDraw(false); lbVid.poster = thumbOf(f); lbVid.src = `clips/${f.name}.mp4`; }
     else {
       lbVid.pause(); lbVid.removeAttribute('src'); lbVid.load();
-      lbImg.src = thumbOf(f);
+      lbImg.src = thumbOf(f); lbImg.alt = altOf(f);
       lb.classList.add('loading');
-      loadFull(f, src => { if (frames[lbIndex] === f) { lbImg.src = src; lb.classList.remove('loading'); } });
+      const here = () => frames[lbIndex] === f;
+      load(midOf(f), src => {
+        if (!here()) return;
+        lbImg.src = src; lb.classList.remove('loading');
+        // Upgrade to 3000px only when the photo is shown larger than the 1600px file.
+        const need = Math.max(lframe.clientWidth, lframe.clientHeight) * (devicePixelRatio || 1);
+        if (need > 1700) load(fullOf(f), s2 => { if (here()) lbImg.src = s2; }, null, 1);
+      }, () => here() && lb.classList.remove('loading'));
     }
     const vis = visible(), k = vis.indexOf(i);
     $('#lbNum').textContent = f.n; $('#lbName').textContent = f.name;
     $('#lbPos').textContent = `${f.g.title} · ${k + 1} / ${vis.length}`;
     note.value = (it && it.c) || '';
     paintLbPick(); fit();
-    [1, -1].forEach(d => { const j = vis[k + d]; if (j != null && !frames[j].v) loadFull(frames[j], () => {}); });
+    [1, -1].forEach(d => { const j = vis[k + d]; if (j != null && !frames[j].v) new Image().src = midOf(frames[j]); });
+    $('#lbX').focus({ preventScroll: true });
   }
   function closeLb() {
     setDraw(false); lbVid.pause();
     lb.classList.remove('open'); document.body.classList.remove('lb-open'); document.body.style.overflow = '';
     const el = figEl[frames[lbIndex].id]; lbIndex = -1;
     el.scrollIntoView({ block: 'nearest' });
+    $('.frame', el).focus({ preventScroll: true });
   }
   function step(d) { const vis = visible(), k = vis.indexOf(lbIndex); const j = vis[(k + d + vis.length) % vis.length]; if (j != null) openLb(j); }
   $('#lbClose').onclick = closeLb; $('#lbX').onclick = closeLb; $('#prev').onclick = () => step(-1); $('#next').onclick = () => step(1);
