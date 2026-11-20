@@ -365,7 +365,9 @@
   const frames = [];
   let pc = 0, vc = 0;
   SHOOT.groups.forEach(g => g.frames.forEach(f => frames.push({ ...f, g, n: f.v ? 'V' + String(++vc).padStart(2, '0') : pad(++pc) })));
-  const thumbOf = (f) => f.v ? `clips/${f.name}.jpg` : `thumb/${f.id}.jpg`;
+  // Photos are served from the repo via raw.githubusercontent.com so the Pages deploy stays small.
+  const MEDIA = location.protocol === 'file:' ? '' : 'https://raw.githubusercontent.com/federicagiglio/portfolio/main/vintage-voice-n9y9kpkt/';
+  const thumbOf = (f) => f.v ? `clips/${f.name}.jpg` : `${MEDIA}thumb/${f.id}.jpg`;
   const byId = Object.fromEntries(frames.map((f, i) => [f.id, i]));
   $('#total').textContent = pc; $('#clips').textContent = vc;
   $('#looks').textContent = SHOOT.groups.filter(g => /^o\d/.test(g.id)).length;
@@ -489,14 +491,14 @@
     else {
       lbVid.pause(); lbVid.removeAttribute('src'); lbVid.load();
       lbImg.src = thumbOf(f);
-      const hi = new Image(); hi.onload = () => { if (frames[lbIndex] === f) lbImg.src = hi.src; }; hi.src = 'img/' + f.id + '.jpg';
+      const hi = new Image(); hi.onload = () => { if (frames[lbIndex] === f) lbImg.src = hi.src; }; hi.src = MEDIA + 'img/' + f.id + '.jpg';
     }
     const vis = visible(), k = vis.indexOf(i);
     $('#lbNum').textContent = f.n; $('#lbName').textContent = f.name;
     $('#lbPos').textContent = `${f.g.title} · ${k + 1} / ${vis.length}`;
     note.value = (it && it.c) || '';
     paintLbPick(); fit();
-    [1, -1].forEach(d => { const j = vis[k + d]; if (j != null && !frames[j].v) new Image().src = 'img/' + frames[j].id + '.jpg'; });
+    [1, -1].forEach(d => { const j = vis[k + d]; if (j != null && !frames[j].v) new Image().src = MEDIA + 'img/' + frames[j].id + '.jpg'; });
   }
   function closeLb() {
     setDraw(false); lbVid.pause();
