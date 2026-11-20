@@ -104,6 +104,15 @@
   .frame svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
   .fig:hover .frame{filter:blur(var(--hover-blur,0px))}
   .fig.picked .frame{outline:1px solid var(--accent)}
+  .sel{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;z-index:2;
+    border:1.5px solid #fff;background:rgba(0,0,0,.18);box-shadow:0 0 0 1px rgba(0,0,0,.12);
+    opacity:0;transition:opacity .2s,background .2s,transform .15s}
+  .sel::after{content:"";position:absolute;inset:6px;border-radius:50%;background:#fff;transform:scale(0);transition:transform .15s}
+  .fig:hover .sel,.fig.picked .sel{opacity:1}
+  .sel:hover{transform:scale(1.08);background:rgba(0,0,0,.35)}
+  .fig.picked .sel{background:var(--accent);border-color:var(--accent)}
+  .fig.picked .sel::after{transform:scale(1)}
+  @media (hover:none){ .sel{opacity:1} }
   .cap{display:flex;gap:8px;align-items:baseline;white-space:nowrap;color:var(--grey);height:14px}
   .cap .num{color:#000;font-weight:500}
   .fig.picked .cap .num{color:var(--accent)}
@@ -125,8 +134,13 @@
   .lb.open{display:grid}
   .stage{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
     padding:24px 32px;min-width:0;min-height:0;user-select:none;-webkit-user-select:none}
-  .lbtop{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:18px 24px;color:var(--grey)}
+  .lbtop{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;justify-content:space-between;padding:18px 24px;color:var(--grey)}
   .lbtop b{color:#fff;font-weight:500}
+  .lbtl{display:flex;align-items:center;gap:12px}
+  .lbx{width:40px;height:40px;margin:-10px 0 -10px -10px;display:grid;place-items:center;font-size:22px;line-height:1;color:#fff;
+    border:1px solid rgba(255,255,255,.35);transition:background .2s,color .2s,border-color .2s;z-index:3}
+  .lbx:hover{background:var(--accent);border-color:var(--accent)}
+  .lb.loading .stage::after{content:"Loading full size…";position:absolute;bottom:18px;left:24px;color:#666;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase}
   .lframe{position:relative;touch-action:none;flex:none}
   .lframe img{display:block;width:100%;height:100%}
   .lframe canvas{position:absolute;inset:0;width:100%;height:100%}
@@ -243,7 +257,7 @@
       <div><dt>Clips</dt><dd id="clips"></dd></div>
     </dl>
     <div class="keys lab">
-      <span>Click</span> to open · <span>●</span> or <span>P</span> to select · <span>N</span> note · <span>D</span> draw · <span>← →</span> browse
+      <span>Click</span> a photo to open · <span>◯</span> on a photo to select · <span>N</span> note · <span>D</span> draw · <span>← →</span> browse
     </div>
   </div>
 </section>
@@ -271,7 +285,7 @@
 <!-- Lightbox -->
 <div class="lb" id="lb">
   <div class="stage" id="stage">
-    <div class="lbtop lab"><span><b id="lbNum"></b> <span class="sep">·</span> <span id="lbName"></span></span><span id="lbPos"></span></div>
+    <div class="lbtop lab"><span class="lbtl"><button class="lbx" id="lbX" aria-label="Close">✕</button><b id="lbNum"></b> <span class="sep">·</span> <span id="lbName"></span></span><span id="lbPos"></span></div>
     <div class="lframe" id="lframe"><img id="lbImg" alt=""><canvas id="cv"></canvas><video id="lbVid" controls playsinline preload="metadata"></video></div>
     <div class="lb-bar lab">
       <button id="prev">← Prev</button>
@@ -365,9 +379,18 @@
   const frames = [];
   let pc = 0, vc = 0;
   SHOOT.groups.forEach(g => g.frames.forEach(f => frames.push({ ...f, g, n: f.v ? 'V' + String(++vc).padStart(2, '0') : pad(++pc) })));
-  // Photos are served from the repo via raw.githubusercontent.com so the Pages deploy stays small.
-  const MEDIA = location.protocol === 'file:' ? '' : 'https://raw.githubusercontent.com/federicagiglio/portfolio/main/vintage-voice-gallery/';
-  const thumbOf = (f) => f.v ? `clips/${f.name}.jpg` : `${MEDIA}thumb/${f.id}.jpg`;
+  // Previews ship with the site. Full-size photos are left out of the Pages build (size limit)
+  // and load from the repo through jsDelivr's CDN, falling back to raw.githubusercontent.com.
+  const LOCAL = location.protocol === 'file:';
+  const FULL = LOCAL ? [''] : ['https://cdn.jsdelivr.net/gh/federicagiglio/portfolio@main/vintage-voice-gallery/',
+                               'https://raw.githubusercontent.com/federicagiglio/portfolio/main/vintage-voice-gallery/'];
+  const thumbOf = (f) => f.v ? `clips/${f.name}.jpg` : `thumb/${f.id}.jpg`;
+  function loadFull(f, done, k = 0) {
+    const im = new Image();
+    im.onload = () => done(im.src);
+    im.onerror = () => { if (k + 1 < FULL.length) loadFull(f, done, k + 1); };
+    im.src = FULL[k] + 'img/' + f.id + '.jpg';
+  }
   const byId = Object.fromEntries(frames.map((f, i) => [f.id, i]));
   $('#total').textContent = pc; $('#clips').textContent = vc;
   $('#looks').textContent = SHOOT.groups.filter(g => /^o\d/.test(g.id)).length;
@@ -386,7 +409,8 @@
       const el = document.createElement('figure');
       el.className = 'fig'; el.dataset.id = f.id;
       el.innerHTML = `<div class="frame" style="aspect-ratio:${f.w}/${f.h}">
-          <img loading="lazy" decoding="async" src="${thumbOf(f)}" alt="${f.n}" width="${f.w}" height="${f.h}">${f.v ? `<span class="play">▶ ${f.dur}</span>` : ''}
+          <img loading="lazy" decoding="async" src="${thumbOf(f)}" alt="${f.n}" width="${f.w}" height="${f.h}">
+          <button class="sel" aria-label="Select ${f.n}"></button>${f.v ? `<span class="play">▶ ${f.dur}</span>` : ''}
           <svg viewBox="0 0 1000 ${Math.round(1000 * f.h / f.w)}" preserveAspectRatio="none"></svg></div>
         <figcaption class="cap lab"><span class="num">${f.n}</span><span class="nm">${f.name}</span><span class="fl"></span>
           <button class="pk" aria-label="Select ${f.n}">●</button></figcaption>`;
@@ -442,9 +466,17 @@
   }
   root.addEventListener('click', e => {
     const el = e.target.closest('.fig'); if (!el) return;
-    if (e.target.closest('.pk')) togglePick(el.dataset.id);
+    if (e.target.closest('.pk,.sel')) togglePick(el.dataset.id);
     else if (e.target.closest('.frame')) openLb(byId[el.dataset.id]);
   });
+
+  // Retry a preview that failed to load (flaky connection), up to twice.
+  root.addEventListener('error', e => {
+    const im = e.target; if (im.tagName !== 'IMG') return;
+    const n = +(im.dataset.retry || 0); if (n >= 2) return;
+    im.dataset.retry = n + 1;
+    setTimeout(() => { im.src = im.src.split('?')[0] + '?r=' + (n + 1); }, 800 * (n + 1));
+  }, true);
 
   // ---------- Lightbox ----------
   const lb = $('#lb'), lbImg = $('#lbImg'), lframe = $('#lframe'), cv = $('#cv'), ctx = cv.getContext('2d');
@@ -491,14 +523,15 @@
     else {
       lbVid.pause(); lbVid.removeAttribute('src'); lbVid.load();
       lbImg.src = thumbOf(f);
-      const hi = new Image(); hi.onload = () => { if (frames[lbIndex] === f) lbImg.src = hi.src; }; hi.src = MEDIA + 'img/' + f.id + '.jpg';
+      lb.classList.add('loading');
+      loadFull(f, src => { if (frames[lbIndex] === f) { lbImg.src = src; lb.classList.remove('loading'); } });
     }
     const vis = visible(), k = vis.indexOf(i);
     $('#lbNum').textContent = f.n; $('#lbName').textContent = f.name;
     $('#lbPos').textContent = `${f.g.title} · ${k + 1} / ${vis.length}`;
     note.value = (it && it.c) || '';
     paintLbPick(); fit();
-    [1, -1].forEach(d => { const j = vis[k + d]; if (j != null && !frames[j].v) new Image().src = MEDIA + 'img/' + frames[j].id + '.jpg'; });
+    [1, -1].forEach(d => { const j = vis[k + d]; if (j != null && !frames[j].v) loadFull(frames[j], () => {}); });
   }
   function closeLb() {
     setDraw(false); lbVid.pause();
@@ -507,7 +540,7 @@
     el.scrollIntoView({ block: 'nearest' });
   }
   function step(d) { const vis = visible(), k = vis.indexOf(lbIndex); const j = vis[(k + d + vis.length) % vis.length]; if (j != null) openLb(j); }
-  $('#lbClose').onclick = closeLb; $('#prev').onclick = () => step(-1); $('#next').onclick = () => step(1);
+  $('#lbClose').onclick = closeLb; $('#lbX').onclick = closeLb; $('#prev').onclick = () => step(-1); $('#next').onclick = () => step(1);
   $('#lbPick').onclick = () => togglePick(frames[lbIndex].id);
   addEventListener('resize', fit);
   $('#tcBtn').onclick = () => {

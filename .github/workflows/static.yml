@@ -34,9 +34,9 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Drop large client media from the Pages build
-        # Contact-sheet photos are loaded from raw.githubusercontent.com instead,
+        # Full-size contact-sheet photos load from jsDelivr / raw GitHub instead,
         # keeping the Pages artifact well under its size limit.
-        run: rm -rf vintage-voice-gallery/img vintage-voice-gallery/thumb
+        run: rm -rf vintage-voice-gallery/img
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
