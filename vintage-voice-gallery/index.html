@@ -380,10 +380,10 @@
   let pc = 0, vc = 0;
   SHOOT.groups.forEach(g => g.frames.forEach(f => frames.push({ ...f, g, n: f.v ? 'V' + String(++vc).padStart(2, '0') : pad(++pc) })));
   // Previews ship with the site. Full-size photos are left out of the Pages build (size limit)
-  // and load from the repo through jsDelivr's CDN, falling back to raw.githubusercontent.com.
+  // and load from the repo via raw.githubusercontent.com, one at a time as photos are opened.
   const LOCAL = location.protocol === 'file:';
-  const FULL = LOCAL ? [''] : ['https://cdn.jsdelivr.net/gh/federicagiglio/portfolio@main/vintage-voice-gallery/',
-                               'https://raw.githubusercontent.com/federicagiglio/portfolio/main/vintage-voice-gallery/'];
+  const RAW = 'https://raw.githubusercontent.com/federicagiglio/portfolio/main/vintage-voice-gallery/';
+  const FULL = LOCAL ? [''] : [RAW, RAW];   // second entry = one retry
   const thumbOf = (f) => f.v ? `clips/${f.name}.jpg` : `thumb/${f.id}.jpg`;
   function loadFull(f, done, k = 0) {
     const im = new Image();
